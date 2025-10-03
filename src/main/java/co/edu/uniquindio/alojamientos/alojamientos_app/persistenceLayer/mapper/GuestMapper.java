@@ -10,6 +10,9 @@ import java.util.List;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.WARN)
 public interface GuestMapper {
 
+    /**
+     * Convierte una entidad GuestEntity a su DTO correspondiente.
+     */
     @Named("guestEntityToGuestDto")
     @Mapping(source = "id", target = "id")
     @Mapping(source = "name", target = "name")
@@ -23,8 +26,8 @@ public interface GuestMapper {
 
 
     /**
-     * Convierte un DTO GuestDto a su entidad correspondiente.
-     * IGNORA las fechas de auditoría porque se manejan automáticamente.
+     * Convierte un DTO GuestDto a una nueva entidad GuestEntity.
+     * IGNORA las fechas de auditoría y relaciones porque se manejan por separado.
      */
     @Named("guestDtoToGuestEntity")
     @Mapping(source = "id", target = "id")
@@ -38,6 +41,34 @@ public interface GuestMapper {
     @Mapping(target = "bookingEntityList", ignore = true)
     @Mapping(target = "commentsWritten", ignore = true)
     GuestEntity guestDtoToGuestEntity(GuestDto guestDto);
+
+
+    /**
+     * Actualiza una GuestEntity existente con datos de GuestDto.
+     *
+     * ¿POR QUÉ @MappingTarget?
+     * - Actualiza la entidad existente en lugar de crear una nueva
+     * - Preserva campos que no deben modificarse (id, email, fechas, relaciones)
+     * - Permite actualización parcial (solo campos no-null del DTO)
+     *
+     * ESTRATEGIA NULL_VALUE_PROPERTY_MAPPING_STRATEGY.IGNORE:
+     * - Si un campo en GuestDto es null, NO actualiza ese campo en la entity
+     * - Permite actualización parcial tipo PATCH
+     * - Ejemplo: Si solo envías {name: "Nuevo Nombre"}, solo se actualiza el nombre
+     *
+     * @param guestDto DTO con los datos a actualizar
+     * @param guestEntity entidad existente que será actualizada
+     */
+    @Mapping(target = "id", ignore = true)                    // ID nunca cambia
+    @Mapping(target = "email", ignore = true)                 // Email no se puede modificar
+    @Mapping(target = "dateRegister", ignore = true)          // Fecha de registro es inmutable
+    @Mapping(target = "dateUpdate", ignore = true)            // Se maneja en el Service
+    @Mapping(target = "active", ignore = true)                // Se maneja en el Service (soft delete)
+    @Mapping(target = "bookingEntityList", ignore = true)     // Relaciones no se actualizan aquí
+    @Mapping(target = "commentsWritten", ignore = true)       // Relaciones no se actualizan aquí
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateEntityFromDto(GuestDto guestDto, @MappingTarget GuestEntity guestEntity);
+
 
 
     /**
