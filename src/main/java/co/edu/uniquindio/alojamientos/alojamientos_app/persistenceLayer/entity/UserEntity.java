@@ -27,7 +27,7 @@ public class UserEntity {
     @Column(name = "date_birth")
     private LocalDate dateBirth;
 
-    @Column(length = 20)
+    @Column(length = 15)
     private String phone;
 
     @Column(nullable = false, unique = true, length = 150)
@@ -43,7 +43,21 @@ public class UserEntity {
     private LocalDateTime dateUpdate;
 
     @Column(nullable = false)
-    private boolean active;
+    private boolean active = true;
+
+    @Column(name = "password", nullable = false)
+    private String password;
+
+    @PrePersist
+    public void onCreate() {
+        this.dateRegister = LocalDateTime.now();
+        this.active = true;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.dateUpdate = LocalDateTime.now();
+    }
 
 
 }

@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Schema(description = "Información del huésped")
 public class GuestDto {
 
@@ -39,8 +38,8 @@ public class GuestDto {
 
 
     @Schema(description = "Número de teléfono del huésped", example = "+573001234567")
-    @Size(max = 20, message = "El teléfono no puede exceder 20 caracteres")
-    @Pattern(regexp = "^\\+?[0-9\\s\\-\\(\\)]{7,20}$", message = "Teléfono inválido")
+    @Size(max = 15, message = "El teléfono no puede exceder 15 caracteres")
+    @Pattern(regexp = "^\\+?[0-9\\s\\-\\(\\)]{7,15}$", message = "Teléfono inválido")
     private String phone;
 
     @Schema(description = "URL de la foto de perfil del huésped", example = "https://example.com/photos/juan.jpg")
@@ -58,4 +57,9 @@ public class GuestDto {
     @Schema(description = "Estado del huésped (activo o inactivo)", example = "true", accessMode = Schema.AccessMode.READ_ONLY)
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private boolean active;
+
+    //TODO: Crear la contrasena en el dto y sus llamados.
+    @Schema(description = "Contraseña del huesped", example = "joel134_?/mart&", accessMode = Schema.AccessMode.READ_ONLY)
+    @JsonProperty(access =  JsonProperty.Access.READ_ONLY)
+    private String password;
 }
