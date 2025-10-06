@@ -94,7 +94,6 @@ public class GuestDao {
         return false;
     }
 
-
     /**
      *Buscar a los huespedes que tienen
      * reservas .
@@ -104,8 +103,16 @@ public class GuestDao {
         return guestMapper.getGuestsDto(guestEntities);
     }
 
-
     public Long countBookingByGuestId(Long id) {
         return guestRepository.countBookingGuestById(id);
+    }
+
+    /**
+     * Verifica si un huésped está activo
+     * @param id ID del huésped
+     * @return true si está activo, false si no existe o está inactivo
+     */
+    public boolean isActiveById(Long id) {
+        return guestRepository.isActiveById(id).orElse(false);
     }
 }

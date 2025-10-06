@@ -59,7 +59,9 @@ public class GuestDto {
     private boolean active;
 
     //TODO: Crear la contrasena en el dto y sus llamados.
-    @Schema(description = "Contraseña del huesped", example = "joel134_?/mart&", accessMode = Schema.AccessMode.READ_ONLY)
-    @JsonProperty(access =  JsonProperty.Access.READ_ONLY)
+    @Schema(description = "Contraseña del huésped", example = "Mg3lC@f3_2024!", accessMode = Schema.AccessMode.WRITE_ONLY  )
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @NotBlank(message = "La contraseña no puede estar vacía")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!]).{8,}$", message = "La contraseña debe tener mínimo 8 caracteres, al menos una mayúscula, una minúscula, un número y un símbolo (@#$%^&+=!)")
     private String password;
 }

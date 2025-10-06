@@ -70,7 +70,6 @@ public interface GuestMapper {
     void updateEntityFromDto(GuestDto guestDto, @MappingTarget GuestEntity guestEntity);
 
 
-
     /**
      * Convierte una lista de entidades GuestEntity a una lista de DTOs.
      *

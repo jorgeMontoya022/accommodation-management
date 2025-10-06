@@ -3,7 +3,6 @@ package co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service.im
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.GuestDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service.GuestService;
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.dao.GuestDao;
-import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.entity.GuestEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,7 +18,6 @@ import java.util.regex.Pattern;
 @Slf4j
 public class GuestServiceImpl implements GuestService {
     private final GuestDao guestDao;
-
 
     @Override
     public GuestDto createGuest(GuestDto guestDto) {
@@ -119,30 +117,43 @@ public class GuestServiceImpl implements GuestService {
         GuestDto guest = getGuestById(id);
         Long bookingCount = guestDao.countBookingByGuestId(id);
         if (bookingCount > 0) {
-            log.warn("Intento de eliminar vendedor con productos. ID: {}, Reservas: {}", id, bookingCount);
+            log.warn("Intento de eliminar huésped con reservas. ID: {}, Reservas: {}", id, bookingCount);
             throw new IllegalStateException(
-                    String.format("No se puede eliminar el huésped porque tiene %d producto(s) asociado(s)", bookingCount)
+                    String.format("No se puede eliminar el huésped porque tiene %d reserva(s) asociada(s)", bookingCount)
             );
         }
+        boolean deleted = guestDao.deleteById(id);
+        if (!deleted) {
+            throw new RuntimeException("Error al eliminar al huésped con ID: " + id);
+        }
+        log.info("Huésped eliminado exitosamente ID: {}", id);
 
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Long getGuestBookingCount(Long guestId) {
-        return null;
+        getGuestById(guestId);
+        return guestDao.countBookingByGuestId(guestId);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean isEmailTaken(String email) {
-        return false;
+        return guestDao.exitsByEmail(email);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean isActiveGuest(Long id) {
-        return false;
+        log.info("Verificando si el huésped con ID {} está activo", id);
+        boolean isActive = guestDao.isActiveById(id);
+        log.info("Huésped con ID {}: {}", id, isActive ? "ACTIVO" : "INACTIVO");
+        return isActive;
     }
 
 
+    // Métodos auxiliares de validación
     private boolean isValidPhone(String phone) {
         Pattern patron = Pattern.compile("^\\+?57?[0-9\\s\\-\\(\\)]{7,15}$");
         Matcher matcher = patron.matcher(phone);

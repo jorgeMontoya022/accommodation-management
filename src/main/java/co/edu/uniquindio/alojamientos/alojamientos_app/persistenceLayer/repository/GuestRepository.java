@@ -21,4 +21,7 @@ public interface GuestRepository extends JpaRepository<GuestEntity, Long> {
 
     @Query("SELECT COUNT(b) FROM BookingEntity b WHERE b.guestEntity.id = :id")
     Long countBookingGuestById(Long id);
+
+    @Query("SELECT g.active FROM GuestEntity g WHERE g.id = :id")
+    Optional<Boolean> isActiveById(Long id);
 }

@@ -5,7 +5,6 @@ import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.GuestDt
 
 public interface GuestService {
 
-
     /**
      * Crear un nuevo huésped
      *
@@ -46,7 +45,7 @@ public interface GuestService {
      * Actualizar huésped existente
      *
      * VALIDACIONES:
-     * - Vendedor debe existir
+     * - Huésoed debe existir
      * - Datos de actualización válidos
      * - No violar reglas de negocio
      *
@@ -66,8 +65,8 @@ public interface GuestService {
      * - Solo permitir eliminación si no tiene reservas
      * - O implementar eliminación en cascada según reglas de negocio
      *
-     * @param id ID del vendedor a eliminar
-     * @throws RuntimeException Si el vendedor no existe o tiene productos asociados
+     * @param id ID del huésped a eliminar
+     * @throws RuntimeException Si el huésped no existe o tiene reservas asociados
      */
     void deleteGuest(Long id);
 
