@@ -18,4 +18,7 @@ public interface GuestRepository extends JpaRepository<GuestEntity, Long> {
 
     @Query("SELECT g FROM GuestEntity g WHERE SIZE(g.bookingEntityList) > 0 ")
     List<GuestEntity> findGuestsWithBookings();
+
+    @Query("SELECT COUNT(b) FROM BookingEntity b WHERE b.guestEntity.id = :id")
+    Long countBookingGuestById(Long id);
 }

@@ -13,4 +13,5 @@ import lombok.NoArgsConstructor;
 @Builder
 @Schema(description = "Información del anfitrión")
 public class HostDto {
+
 }

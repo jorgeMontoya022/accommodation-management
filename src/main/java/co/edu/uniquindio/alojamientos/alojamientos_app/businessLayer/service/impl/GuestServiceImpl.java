@@ -3,6 +3,7 @@ package co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service.im
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.GuestDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service.GuestService;
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.dao.GuestDao;
+import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.entity.GuestEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -66,28 +67,63 @@ public class GuestServiceImpl implements GuestService {
         }
 
 
-
     }
 
     @Override
     @Transactional(readOnly = true)
     public GuestDto getGuestById(Long id) {
-        return null;
-
+        return guestDao.findById(id)
+                .orElseThrow(() -> {
+                    log.warn("Huésped no encontrado con ID: {}", id);
+                    return new RuntimeException("Huésped no encontrado con ID: " + id);
+                });
     }
 
     @Override
     public GuestDto getGuestByEmail(String email) {
-        return null;
+        return guestDao.findByEmail(email)
+                .orElseThrow(() -> {
+                    log.warn("Huésped no encontrado con ID: {}", email);
+                    return new RuntimeException("Huésped no encontrado con el email: " + email);
+                });
     }
 
     @Override
     public GuestDto updateGuest(Long id, GuestDto guestDto) {
-        return null;
+        if (!guestDao.findById(id).isPresent()) {
+            throw new RuntimeException("Vendedor no encontrado con ID: " + id);
+        }
+        validateGuestUpdateData(guestDto);
+        return guestDao.update(id, guestDto).orElseThrow(() -> new RuntimeException("Error al actualizar al huésped"));
+    }
+
+    private void validateGuestUpdateData(GuestDto guestDto) {
+        if (guestDto.getName().trim().isEmpty()) {
+            throw new IllegalArgumentException("El nombre no puede estar vacío");
+        }
+        if (guestDto.getName().length() > 100) {
+            throw new IllegalArgumentException("El nombre no puede exceder 100 caracteres");
+        }
+
+        if (guestDto.getPhone().trim().isEmpty()) {
+            throw new IllegalArgumentException("El teléfono no puede estar vacío");
+        }
+
+        if (guestDto.getPhone().length() > 15) {
+            throw new IllegalArgumentException("El teléfono no puede exceder 15 caracteres");
+        }
     }
 
     @Override
     public void deleteGuest(Long id) {
+        GuestDto guest = getGuestById(id);
+        Long bookingCount = guestDao.countBookingByGuestId(id);
+        if (bookingCount > 0) {
+            log.warn("Intento de eliminar vendedor con productos. ID: {}, Reservas: {}", id, bookingCount);
+            throw new IllegalStateException(
+                    String.format("No se puede eliminar el huésped porque tiene %d producto(s) asociado(s)", bookingCount)
+            );
+        }
 
     }
 
@@ -105,7 +141,6 @@ public class GuestServiceImpl implements GuestService {
     public boolean isActiveGuest(Long id) {
         return false;
     }
-
 
 
     private boolean isValidPhone(String phone) {

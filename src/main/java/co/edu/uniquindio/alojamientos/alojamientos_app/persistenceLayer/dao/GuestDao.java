@@ -105,4 +105,7 @@ public class GuestDao {
     }
 
 
+    public Long countBookingByGuestId(Long id) {
+        return guestRepository.countBookingGuestById(id);
+    }
 }
