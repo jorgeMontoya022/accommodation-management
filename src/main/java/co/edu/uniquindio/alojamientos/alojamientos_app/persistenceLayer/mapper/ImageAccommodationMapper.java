@@ -14,10 +14,6 @@ public interface ImageAccommodationMapper {
      * Convierte una entidad ImageAccommodation a su DTO correspondiente.
      */
     @Named("imageAccommodationEntityToImageAccommodationDto")
-    @Mapping(source = "id", target = "id")
-    @Mapping(source = "url", target = "url")
-    @Mapping(source = "isPrincipal", target = "isPrincipal")
-    @Mapping(source = "displayOrder", target = "displayOrder")
     @Mapping(source = "accommodationEntity.id", target = "idAccommodation")
     ImageAccommodationDto imageAccommodationEntityToImageAccommodationDto(ImageAccommodation imageAccommodation);
 
@@ -27,10 +23,6 @@ public interface ImageAccommodationMapper {
      * IGNORA la relación con el alojamiento porque se maneja por separado.
      */
     @Named("imageAccommodationDtoToImageAccommodationEntity")
-    @Mapping(source = "id", target = "id")
-    @Mapping(source = "url", target = "url")
-    @Mapping(source = "isPrincipal", target = "isPrincipal")
-    @Mapping(source = "displayOrder", target = "displayOrder")
     @Mapping(target = "accommodationEntity", ignore = true)
     ImageAccommodation imageAccommodationDtoToImageAccommodationEntity(ImageAccommodationDto imageAccommodationDto);
 

@@ -1,6 +1,7 @@
 package co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.dao;
 
-import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.GuestDto;
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.RequestGuestDto;
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.ResponseGuestDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.entity.GuestEntity;
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.mapper.GuestMapper;
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.repository.GuestRepository;
@@ -25,7 +26,7 @@ public class GuestDao {
      * 3. Entity guardada → DTO (con Mapper)
      * 4. Retornar DTO al Service
      */
-    public GuestDto save(GuestDto guestDto) {
+    public ResponseGuestDto save(RequestGuestDto guestDto) {
         GuestEntity guestEntity = guestMapper.guestDtoToGuestEntity(guestDto);
         GuestEntity savedGuestEntity = guestRepository.save(guestEntity);
         return guestMapper.guestEntityToGuestDto(savedGuestEntity);
@@ -35,7 +36,7 @@ public class GuestDao {
      * Busca un huésped por su ID único.
      * Retorna un Optional con el GuestDto si existe.
      */
-    public Optional<GuestDto> findById(Long id) {
+    public Optional<ResponseGuestDto> findById(Long id) {
         return guestRepository.findById(id)
                 .map(guestMapper::guestEntityToGuestDto);
     }
@@ -44,7 +45,7 @@ public class GuestDao {
      * Busca un huésped por su correo electrónico.
      * Retorna un Optional con el GuestDto si existe.
      */
-    public Optional<GuestDto> findByEmail(String email) {
+    public Optional<ResponseGuestDto> findByEmail(String email) {
         return guestRepository.findByEmail(email)
                 .map(guestMapper::guestEntityToGuestDto);
     }
@@ -53,7 +54,7 @@ public class GuestDao {
      * Obtiene la lista de todos los huéspedes registrados.
      * Retorna una lista de GuestDto.
      */
-    public List<GuestDto> findAll() {
+    public List<ResponseGuestDto> findAll() {
         return guestMapper.getGuestsDto(guestRepository.findAll());
     }
 
@@ -70,7 +71,7 @@ public class GuestDao {
      * Actualiza la información de un huésped existente por su ID.
      * Si se encuentra, aplica cambios desde el DTO y retorna el GuestDto actualizado.
      */
-    public Optional<GuestDto> update(Long id, GuestDto updateDto){
+    public Optional<ResponseGuestDto> update(Long id, RequestGuestDto updateDto){
         return guestRepository.findById(id)
                 .map(existingEntity -> {
                     guestMapper.updateEntityFromDto(updateDto, existingEntity);
@@ -98,7 +99,7 @@ public class GuestDao {
      *Buscar a los huespedes que tienen
      * reservas .
      */
-    public List<GuestDto> findGuestsWithBookings() {
+    public List<ResponseGuestDto> findGuestsWithBookings() {
         List<GuestEntity> guestEntities = guestRepository.findGuestsWithBookings();
         return guestMapper.getGuestsDto(guestEntities);
     }

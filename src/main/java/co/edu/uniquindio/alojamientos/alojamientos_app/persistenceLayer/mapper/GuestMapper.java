@@ -1,6 +1,7 @@
 package co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.mapper;
 
-import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.GuestDto;
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.RequestGuestDto;
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.ResponseGuestDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.entity.GuestEntity;
 import org.mapstruct.*;
 
@@ -14,33 +15,18 @@ public interface GuestMapper {
      * Convierte una entidad GuestEntity a su DTO correspondiente.
      */
     @Named("guestEntityToGuestDto")
-    @Mapping(source = "id", target = "id")
-    @Mapping(source = "name", target = "name")
-    @Mapping(source = "dateBirth", target = "dateBirth")
-    @Mapping(source = "phone", target = "phone")
-    @Mapping(source = "email", target = "email")
-    @Mapping(target = "dateRegister", ignore = true)
-    @Mapping(target = "dateUpdate", ignore = true)
-    @Mapping(source = "active", target = "active")
-    GuestDto guestEntityToGuestDto(GuestEntity guestEntity);
-
+    ResponseGuestDto guestEntityToGuestDto(GuestEntity guestEntity);
 
     /**
      * Convierte un DTO GuestDto a una nueva entidad GuestEntity.
      * IGNORA las fechas de auditoría y relaciones porque se manejan por separado.
      */
     @Named("guestDtoToGuestEntity")
-    @Mapping(source = "id", target = "id")
-    @Mapping(source = "name", target = "name")
-    @Mapping(source = "dateBirth", target = "dateBirth")
-    @Mapping(source = "phone", target = "phone")
-    @Mapping(source = "email", target = "email")
     @Mapping(target = "dateRegister", ignore = true)
     @Mapping(target = "dateUpdate", ignore = true)
-    @Mapping(source = "active", target = "active")
     @Mapping(target = "bookingEntityList", ignore = true)
     @Mapping(target = "commentsWritten", ignore = true)
-    GuestEntity guestDtoToGuestEntity(GuestDto guestDto);
+    GuestEntity guestDtoToGuestEntity(RequestGuestDto guestDto);
 
 
     /**
@@ -67,7 +53,7 @@ public interface GuestMapper {
     @Mapping(target = "bookingEntityList", ignore = true)     // Relaciones no se actualizan aquí
     @Mapping(target = "commentsWritten", ignore = true)       // Relaciones no se actualizan aquí
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateEntityFromDto(GuestDto guestDto, @MappingTarget GuestEntity guestEntity);
+    void updateEntityFromDto(RequestGuestDto guestDto, @MappingTarget GuestEntity guestEntity);
 
 
     /**
@@ -77,7 +63,7 @@ public interface GuestMapper {
      * @return lista de DTOs
      */
     @IterableMapping(qualifiedByName = "guestEntityToGuestDto")
-    List<GuestDto> getGuestsDto(List<GuestEntity> guestEntityList);
+    List<ResponseGuestDto> getGuestsDto(List<GuestEntity> guestEntityList);
 
 
     /**
@@ -87,7 +73,7 @@ public interface GuestMapper {
      * @return lista de entidades
      */
     @IterableMapping(qualifiedByName = "guestDtoToGuestEntity")
-    List<GuestEntity> getGuestsEntity(List<GuestDto> guestDtoList);
+    List<GuestEntity> getGuestsEntity(List<RequestGuestDto> guestDtoList);
 
 
 }

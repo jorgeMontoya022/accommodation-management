@@ -1,7 +1,8 @@
 package co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service;
 
 
-import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.GuestDto;
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.RequestGuestDto;
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.ResponseGuestDto;
 
 public interface GuestService {
 
@@ -18,7 +19,7 @@ public interface GuestService {
      * @throws IllegalArgumentException Si los datos no son válidos
      * @throws RuntimeException Si el email ya existe
      */
-    GuestDto createGuest(GuestDto guestDto);
+    ResponseGuestDto createGuest(RequestGuestDto guestDto);
 
 
     /**
@@ -28,7 +29,7 @@ public interface GuestService {
      * @return DTO del huésped encontrado
      * @throws RuntimeException Si el huésped no existe
      */
-    GuestDto getGuestById(Long id);
+    ResponseGuestDto getGuestById(Long id);
 
 
     /**
@@ -38,7 +39,7 @@ public interface GuestService {
      * @return DTO del huésped encontrado
      * @throws RuntimeException Si el huésped no existe
      */
-    GuestDto getGuestByEmail(String email);
+    ResponseGuestDto getGuestByEmail(String email);
 
 
     /**
@@ -54,7 +55,7 @@ public interface GuestService {
      * @return DTO del huésped actualizado
      * @throws RuntimeException Si el huésped no existe
      */
-    GuestDto updateGuest(Long id, GuestDto guestDto);
+    ResponseGuestDto updateGuest(Long id, RequestGuestDto guestDto);
 
 
     /**

@@ -5,21 +5,10 @@ import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.entity.T
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Schema(description = "Información de alojamiento")
-public class AccommodationDto {
-
-    @Schema(description = "ID único del alojamiento", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Long id;
+public class RequestAccommodationDto {
 
     @Schema(description = "Título del alojamiento", example = "Casa rural con vista al mar", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "El título es obligatorio")
@@ -38,12 +27,12 @@ public class AccommodationDto {
     private String city;
 
     @Schema(description = "Latitud del alojamiento", example = "4.6374", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotBlank(message = "La latitud es obligatoria")
-    private String latitude;
+    @Min(value = 0, message = "La latitud es obligatoria")
+    private float latitude;
 
     @Schema(description = "Longitud del alojamiento", example = "-75.5705", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotBlank(message = "La longitud es obligatoria")
-    private String longitude;
+    @Min(value = 0, message = "La longitud es obligatoria")
+    private float longitude;
 
     @Schema(description = "Precio por noche del alojamiento en pesos colombianos", example = "250000", requiredMode = Schema.RequiredMode.REQUIRED)
     @Positive(message = "El precio por noche debe ser un valor positivo")
@@ -52,18 +41,6 @@ public class AccommodationDto {
     @Schema(description = "Capacidad máxima de personas que admite el alojamiento", example = "4", requiredMode = Schema.RequiredMode.REQUIRED)
     @Min(value = 1, message = "La capacidad máxima debe ser al menos 1 persona")
     private int maximumCapacity;
-
-    @Schema(description = "Fecha de creación del registro del alojamiento", example = "2025-05-06T14:30:00", accessMode = Schema.AccessMode.READ_ONLY)
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private LocalDateTime dateCreation;
-
-    @Schema(description = "Fecha de la última actualización del registro del alojamiento", example = "2025-05-10T09:45:00", accessMode = Schema.AccessMode.READ_ONLY)
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private LocalDateTime dateUpdate;
-
-    @Schema(description = "Estado actual del alojamiento", example = "ACTIVE", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotNull(message = "El estado del alojamiento es obligatorio")
-    private StatusAccommodation statusAccommodation;
 
     @Schema(description = "Tipo de servicio que ofrece el alojamiento", example = "WI-FI", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = "El tipo de servicio es obligatorio")

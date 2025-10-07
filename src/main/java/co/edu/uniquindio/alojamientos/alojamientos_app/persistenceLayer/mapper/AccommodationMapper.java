@@ -1,6 +1,6 @@
 package co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.mapper;
 
-import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.AccommodationDto;
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.ResponseAccommodationDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.entity.AccommodationEntity;
 import org.mapstruct.*;
 
@@ -27,7 +27,7 @@ public interface AccommodationMapper {
     @Mapping(source = "statusAccommodation", target = "statusAccommodation")
     @Mapping(source = "typeServicesEnum", target = "typeServicesEnum")
     @Mapping(source = "hostEntity.id", target = "idHost")
-    AccommodationDto accommodationEntityToAccommodationDto(AccommodationEntity accommodationEntity);
+    ResponseAccommodationDto accommodationEntityToAccommodationDto(AccommodationEntity accommodationEntity);
 
 
     /**
@@ -51,7 +51,7 @@ public interface AccommodationMapper {
     @Mapping(target = "hostEntity", ignore = true)
     @Mapping(target = "images", ignore = true)
     @Mapping(target = "comments", ignore = true)
-    AccommodationEntity accommodationDtoToAccommodationEntity(AccommodationDto accommodationDto);
+    AccommodationEntity accommodationDtoToAccommodationEntity(ResponseAccommodationDto accommodationDto);
 
 
     /**
@@ -79,7 +79,7 @@ public interface AccommodationMapper {
     @Mapping(target = "images", ignore = true)                // Relaciones no se actualizan aquí
     @Mapping(target = "comments", ignore = true)              // Relaciones no se actualizan aquí
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateEntityFromDto(AccommodationDto accommodationDto, @MappingTarget AccommodationEntity accommodationEntity);
+    void updateEntityFromDto(ResponseAccommodationDto accommodationDto, @MappingTarget AccommodationEntity accommodationEntity);
 
 
     /**
@@ -89,7 +89,7 @@ public interface AccommodationMapper {
      * @return lista de DTOs
      */
     @IterableMapping(qualifiedByName = "accommodationEntityToAccommodationDto")
-    List<AccommodationDto> getAccommodationsDto(List<AccommodationEntity> accommodationEntityList);
+    List<ResponseAccommodationDto> getAccommodationsDto(List<AccommodationEntity> accommodationEntityList);
 
 
     /**
@@ -99,7 +99,7 @@ public interface AccommodationMapper {
      * @return lista de entidades
      */
     @IterableMapping(qualifiedByName = "accommodationDtoToAccommodationEntity")
-    List<AccommodationEntity> getAccommodationsEntity(List<AccommodationDto> accommodationDtoList);
+    List<AccommodationEntity> getAccommodationsEntity(List<ResponseAccommodationDto> accommodationDtoList);
 
 
 }

@@ -1,6 +1,7 @@
 package co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service.impl;
 
-import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.GuestDto;
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.RequestGuestDto;
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.ResponseGuestDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service.GuestService;
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.dao.GuestDao;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ public class GuestServiceImpl implements GuestService {
     private final GuestDao guestDao;
 
     @Override
-    public GuestDto createGuest(GuestDto guestDto) {
+    public ResponseGuestDto createGuest(RequestGuestDto guestDto) {
         log.info("Creando nuevo vendedor con email: {}", guestDto.getEmail());
 
         // Validación de negocio: Email único
@@ -32,14 +33,15 @@ public class GuestServiceImpl implements GuestService {
 
         validateGuestCreateData(guestDto);
 
-        GuestDto createdGuest = guestDao.save(guestDto);
+        ResponseGuestDto createdGuest = guestDao.save(guestDto);
         log.info("Huésped creado exitosament con ID: {}", createdGuest.getId());
+
         return createdGuest;
 
     }
 
     //TODO: ¿Preguntar si es necesario tener esas validaciones nuevamente?
-    private void validateGuestCreateData(GuestDto guestDto) {
+    private void validateGuestCreateData(RequestGuestDto guestDto) {
         if (guestDto.getName() == null || guestDto.getName().trim().isEmpty()) {
             throw new IllegalArgumentException("El nombre del huésped es obligatorio");
         }
@@ -69,16 +71,25 @@ public class GuestServiceImpl implements GuestService {
 
     @Override
     @Transactional(readOnly = true)
-    public GuestDto getGuestById(Long id) {
-        return guestDao.findById(id)
+    public ResponseGuestDto getGuestById(Long id) {
+
+        ResponseGuestDto responseGuestDto = guestDao.findById(id)
                 .orElseThrow(() -> {
                     log.warn("Huésped no encontrado con ID: {}", id);
                     return new RuntimeException("Huésped no encontrado con ID: " + id);
                 });
+
+        //Si no hay foro pone una por defecto
+        if(responseGuestDto.getPhotoProfile() == null){
+            responseGuestDto.setPhotoProfile("https://e7.pngegg.com/pngimages/867/694/png-clipart-user-profile-default-computer-icons-network-video-recorder-avatar-cartoon-maker-blue-text.png");
+        }
+
+        return responseGuestDto;
+
     }
 
     @Override
-    public GuestDto getGuestByEmail(String email) {
+    public ResponseGuestDto getGuestByEmail(String email) {
         return guestDao.findByEmail(email)
                 .orElseThrow(() -> {
                     log.warn("Huésped no encontrado con ID: {}", email);
@@ -87,7 +98,7 @@ public class GuestServiceImpl implements GuestService {
     }
 
     @Override
-    public GuestDto updateGuest(Long id, GuestDto guestDto) {
+    public ResponseGuestDto updateGuest(Long id, RequestGuestDto guestDto) {
         if (!guestDao.findById(id).isPresent()) {
             throw new RuntimeException("Vendedor no encontrado con ID: " + id);
         }
@@ -95,7 +106,7 @@ public class GuestServiceImpl implements GuestService {
         return guestDao.update(id, guestDto).orElseThrow(() -> new RuntimeException("Error al actualizar al huésped"));
     }
 
-    private void validateGuestUpdateData(GuestDto guestDto) {
+    private void validateGuestUpdateData(RequestGuestDto guestDto) {
         if (guestDto.getName().trim().isEmpty()) {
             throw new IllegalArgumentException("El nombre no puede estar vacío");
         }
@@ -114,7 +125,7 @@ public class GuestServiceImpl implements GuestService {
 
     @Override
     public void deleteGuest(Long id) {
-        GuestDto guest = getGuestById(id);
+        ResponseGuestDto guest = getGuestById(id);
         Long bookingCount = guestDao.countBookingByGuestId(id);
         if (bookingCount > 0) {
             log.warn("Intento de eliminar huésped con reservas. ID: {}, Reservas: {}", id, bookingCount);

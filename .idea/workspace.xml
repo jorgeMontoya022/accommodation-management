@@ -5,15 +5,27 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="66831e74-db4e-4efd-9b53-ddd260788d6f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/businessLayer/dto/ImageAccommodationDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/persistenceLayer/mapper/ImageAccommodationMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/businessLayer/dto/RequestAccommodationDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/businessLayer/dto/RequestBookingDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/businessLayer/dto/ResponseGuestDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/businessLayer/service/impl/EmailServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/businessLayer/dto/BookingDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/businessLayer/dto/BookingDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/businessLayer/dto/CommentDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/businessLayer/dto/CommentDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/persistenceLayer/entity/CommentEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/persistenceLayer/entity/CommentEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/.gitattributes" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/build.gradle" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gradlew" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gradlew.bat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/businessLayer/dto/AccommodationDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/businessLayer/dto/ResponseAccommodationDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/businessLayer/dto/GuestDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/businessLayer/dto/RequestGuestDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/businessLayer/service/EmailService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/businessLayer/service/EmailService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/businessLayer/service/GuestService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/businessLayer/service/GuestService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/businessLayer/service/impl/GuestServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/businessLayer/service/impl/GuestServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/persistenceLayer/dao/GuestDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/persistenceLayer/dao/GuestDao.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/persistenceLayer/mapper/AccommodationMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/persistenceLayer/mapper/AccommodationMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/persistenceLayer/mapper/BookingMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/persistenceLayer/mapper/BookingMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/persistenceLayer/mapper/CommentMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/persistenceLayer/mapper/CommentMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/persistenceLayer/mapper/GuestMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/persistenceLayer/mapper/GuestMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/persistenceLayer/mapper/ImageAccommodationMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/persistenceLayer/mapper/ImageAccommodationMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/settings.gradle" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,23 +89,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/57324/OneDrive/Documentos/UNIVERSIDAD/SEMESTRE 4/Programación 3/proyecto de repaso&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;AtomSettingsConfigurable&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Gradle.Build accommodation-management.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "Spring Boot.AlojamientosApplication.executor": "Run",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/57324/OneDrive/Documentos/UNIVERSIDAD/SEMESTRE 4/Programación 3/proyecto de repaso",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "AtomSettingsConfigurable",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="AlojamientosApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="alojamientos_app.main" />
@@ -118,7 +132,7 @@
       <workItem from="1759759566069" duration="6015000" />
       <workItem from="1759785372681" duration="6090000" />
       <workItem from="1759806470154" duration="3840000" />
-      <workItem from="1759850185840" duration="1708000" />
+      <workItem from="1759850185840" duration="6418000" />
     </task>
     <servers />
   </component>

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "Información del huésped")
-public class GuestDto {
+public class ResponseGuestDto {
 
     @Schema(description = "ID único del huésped", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -50,18 +49,8 @@ public class GuestDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime dateRegister;
 
-    @Schema(description = "Fecha y hora de última actualización", example = "2025-10-02T14:20:00", accessMode = Schema.AccessMode.READ_ONLY)
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private LocalDateTime dateUpdate;
-
     @Schema(description = "Estado del huésped (activo o inactivo)", example = "true", accessMode = Schema.AccessMode.READ_ONLY)
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private boolean active;
 
-    //TODO: Crear la contrasena en el dto y sus llamados.
-    @Schema(description = "Contraseña del huésped", example = "Mg3lC@f3_2024!", accessMode = Schema.AccessMode.WRITE_ONLY  )
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @NotBlank(message = "La contraseña no puede estar vacía")
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!]).{8,}$", message = "La contraseña debe tener mínimo 8 caracteres, al menos una mayúscula, una minúscula, un número y un símbolo (@#$%^&+=!)")
-    private String password;
 }
