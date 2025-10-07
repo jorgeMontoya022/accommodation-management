@@ -31,7 +31,6 @@ public class RequestGuestDto {
     @Past(message = "La fecha de nacimiento debe estar en el pasado")
     private LocalDate dateBirth;
 
-
     @Schema(description = "Número de teléfono del huésped", example = "+573001234567")
     @Size(max = 15, message = "El teléfono no puede exceder 15 caracteres")
     @Pattern(regexp = "^\\+?[0-9\\s\\-\\(\\)]{7,15}$", message = "Teléfono inválido")

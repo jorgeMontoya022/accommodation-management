@@ -17,11 +17,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Schema(description = "Información del anfitrión")
-public class HostDto {
-
-    @Schema(description = "ID único del anfitrión", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Long id;
+public class RequestHostDto {
 
     @Schema(description = "Nombre completo del anfitrión", example = "Juan Pérez", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "El nombre es obligatorio")
@@ -47,19 +43,7 @@ public class HostDto {
     @Size(max = 500, message = "La URL de la foto no puede exceder 500 caracteres")
     private String photoProfile;
 
-    @Schema(description = "Fecha y hora de registro del anfitrión", example = "2025-01-15T10:30:00", accessMode = Schema.AccessMode.READ_ONLY)
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private LocalDateTime dateRegister;
-
-    @Schema(description = "Fecha y hora de última actualización", example = "2025-10-02T14:20:00", accessMode = Schema.AccessMode.READ_ONLY)
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private LocalDateTime dateUpdate;
-
-    @Schema(description = "Estado del anfitrión (activo o inactivo)", example = "true", accessMode = Schema.AccessMode.READ_ONLY)
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private boolean active;
-
-    @Schema(description = "Contraseña del anfitrión", example = "Mg3lC@f3_2024!", accessMode = Schema.AccessMode.WRITE_ONLY  )
+    @Schema(description = "Contraseña del anfitrión", example = "Mg3lC@f3_2024!", accessMode = Schema.AccessMode.WRITE_ONLY)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotBlank(message = "La contraseña no puede estar vacía")
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!]).{8,}$", message = "La contraseña debe tener mínimo 8 caracteres, al menos una mayúscula, una minúscula, un número y un símbolo (@#$%^&+=!)")

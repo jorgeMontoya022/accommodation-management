@@ -57,9 +57,6 @@ public class ResponseAccommodationDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime dateCreation;
 
-    @Schema(description = "Fecha de la última actualización del registro del alojamiento", example = "2025-05-10T09:45:00", accessMode = Schema.AccessMode.READ_ONLY)
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private LocalDateTime dateUpdate;
 
     @Schema(description = "Estado actual del alojamiento", example = "ACTIVE", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = "El estado del alojamiento es obligatorio")

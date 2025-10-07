@@ -16,41 +16,26 @@ import java.time.LocalDateTime;
 @Schema(description = "Información del huésped")
 public class ResponseGuestDto {
 
-    @Schema(description = "ID único del huésped", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+
     private Long id;
 
-    @Schema(description = "Nombre completo del huésped", example = "Juan Pérez", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotBlank(message = "El nombre es obligatorio")
-    @Size(max = 100, message = "El nombre no puede exceder 100 caracteres")
     private String name;
 
-    @Schema(description = "Correo electrónico del huésped", example = "juan@example.com", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotBlank(message = "El email es obligatorio")
-    @Email(message = "Email inválido")
-    @Size(max = 150, message = "El email no puede exceder 150 caracteres")
+
     private String email;
 
-    @Schema(description = "Fecha de nacimiento del huésped", example = "1990-05-15")
-    @Past(message = "La fecha de nacimiento debe estar en el pasado")
+
     private LocalDate dateBirth;
 
-
-    @Schema(description = "Número de teléfono del huésped", example = "+573001234567")
-    @Size(max = 15, message = "El teléfono no puede exceder 15 caracteres")
-    @Pattern(regexp = "^\\+?[0-9\\s\\-\\(\\)]{7,15}$", message = "Teléfono inválido")
     private String phone;
 
-    @Schema(description = "URL de la foto de perfil del huésped", example = "https://example.com/photos/juan.jpg")
-    @Size(max = 500, message = "La URL de la foto no puede exceder 500 caracteres")
+
     private String photoProfile;
 
-    @Schema(description = "Fecha y hora de registro del huésped", example = "2025-01-15T10:30:00", accessMode = Schema.AccessMode.READ_ONLY)
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+
     private LocalDateTime dateRegister;
 
-    @Schema(description = "Estado del huésped (activo o inactivo)", example = "true", accessMode = Schema.AccessMode.READ_ONLY)
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+
     private boolean active;
 
 }

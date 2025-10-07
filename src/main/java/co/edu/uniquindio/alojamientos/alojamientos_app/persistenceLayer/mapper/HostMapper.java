@@ -1,6 +1,7 @@
 package co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.mapper;
 
-import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.HostDto;
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.RequestHostDto;
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.ResponseHostDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.entity.HostEntity;
 import org.mapstruct.*;
 
@@ -21,7 +22,7 @@ public interface HostMapper {
     @Mapping(target = "dateRegister", ignore = true)
     @Mapping(target = "dateUpdate", ignore = true)
     @Mapping(source = "active", target = "active")
-    HostDto hostEntityToHostDto(HostEntity hostEntity);
+    ResponseHostDto hostEntityToHostDto(HostEntity hostEntity);
 
 
     /**
@@ -38,7 +39,7 @@ public interface HostMapper {
     @Mapping(target = "dateUpdate", ignore = true)
     @Mapping(source = "active", target = "active")
     @Mapping(target = "accommodationEntityList", ignore = true)
-    HostEntity hostDtoToHostEntity(HostDto hostDto);
+    HostEntity hostDtoToHostEntity(RequestHostDto hostDto);
 
 
     /**
@@ -64,7 +65,7 @@ public interface HostMapper {
     @Mapping(target = "active", ignore = true)                   // Se maneja en el Service (soft delete)
     @Mapping(target = "accommodationEntityList", ignore = true)  // Relaciones no se actualizan aquí
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateEntityFromDto(HostDto hostDto, @MappingTarget HostEntity hostEntity);
+    void updateEntityFromDto(RequestHostDto hostDto, @MappingTarget HostEntity hostEntity);
 
 
     /**
@@ -74,7 +75,7 @@ public interface HostMapper {
      * @return lista de DTOs
      */
     @IterableMapping(qualifiedByName = "hostEntityToHostDto")
-    List<HostDto> getHostsDto(List<HostEntity> hostEntityList);
+    List<ResponseHostDto> getHostsDto(List<HostEntity> hostEntityList);
 
 
     /**
@@ -84,7 +85,7 @@ public interface HostMapper {
      * @return lista de entidades
      */
     @IterableMapping(qualifiedByName = "hostDtoToHostEntity")
-    List<HostEntity> getHostsEntity(List<HostDto> hostDtoList);
+    List<HostEntity> getHostsEntity(List<RequestHostDto> hostDtoList);
 
 
 }

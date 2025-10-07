@@ -1,6 +1,6 @@
 package co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service;
 
-import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.HostDto;
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.RequestHostDto;
 
 /**
  * Servicio para la gestión de anfitriones
@@ -25,7 +25,7 @@ public interface HostService {
      * @throws IllegalArgumentException Si los datos no son válidos
      * @throws RuntimeException Si el email ya existe
      */
-    HostDto createHost(HostDto hostDto);
+    RequestHostDto createHost(RequestHostDto hostDto);
 
     /**
      * Buscar anfitrión por ID
@@ -34,7 +34,7 @@ public interface HostService {
      * @return DTO del anfitrión encontrado
      * @throws RuntimeException Si el anfitrión no existe
      */
-    HostDto getHostById(Long id);
+    RequestHostDto getHostById(Long id);
 
     /**
      * Buscar anfitrión por email
@@ -43,7 +43,7 @@ public interface HostService {
      * @return DTO del anfitrión encontrado
      * @throws RuntimeException Si el anfitrión no existe
      */
-    HostDto getHostByEmail(String email);
+    RequestHostDto getHostByEmail(String email);
 
     /**
      * Actualizar anfitrión existente
@@ -59,7 +59,7 @@ public interface HostService {
      * @throws RuntimeException Si el anfitrión no existe
      * @throws IllegalArgumentException Si los datos no son válidos
      */
-    HostDto updateHost(Long id, HostDto hostDto);
+    RequestHostDto updateHost(Long id, RequestHostDto hostDto);
 
     /**
      * Eliminar anfitrión

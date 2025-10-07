@@ -1,6 +1,6 @@
 package co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service.impl;
 
-import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.HostDto;
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.RequestHostDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service.HostService;
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.dao.HostDao;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class HostServicesImpl implements HostService {
     private final HostDao hostDao;
 
     @Override
-    public HostDto createHost(HostDto hostDto) {
+    public RequestHostDto createHost(RequestHostDto hostDto) {
         log.info("Creando nuevo anfitrión con email: {}", hostDto.getEmail());
 
         // Validación de negocio: Email único
@@ -30,12 +30,12 @@ public class HostServicesImpl implements HostService {
 
         validateHostCreateData(hostDto);
 
-        HostDto createdHost = hostDao.save(hostDto);
+        RequestHostDto createdHost = hostDao.save(hostDto);
         log.info("Anfitrión creado exitosamente con ID: {}", createdHost.getId());
         return createdHost;
     }
 
-    private void validateHostCreateData(HostDto hostDto) {
+    private void validateHostCreateData(RequestHostDto hostDto) {
         if (hostDto.getName() == null || hostDto.getName().trim().isEmpty()) {
             throw new IllegalArgumentException("El nombre del anfitrión es obligatorio");
         }
@@ -67,7 +67,7 @@ public class HostServicesImpl implements HostService {
 
     @Override
     @Transactional(readOnly = true)
-    public HostDto getHostById(Long id) {
+    public RequestHostDto getHostById(Long id) {
         return hostDao.findById(id)
                 .orElseThrow(() -> {
                     log.warn("Anfitrión no encontrado con ID: {}", id);
@@ -77,7 +77,7 @@ public class HostServicesImpl implements HostService {
 
     @Override
     @Transactional(readOnly = true)
-    public HostDto getHostByEmail(String email) {
+    public RequestHostDto getHostByEmail(String email) {
         return hostDao.findByEmail(email)
                 .orElseThrow(() -> {
                     log.warn("Anfitrión no encontrado con email: {}", email);
@@ -86,7 +86,7 @@ public class HostServicesImpl implements HostService {
     }
 
     @Override
-    public HostDto updateHost(Long id, HostDto hostDto) {
+    public RequestHostDto updateHost(Long id, RequestHostDto hostDto) {
         if (!hostDao.findById(id).isPresent()) {
             throw new RuntimeException("Anfitrión no encontrado con ID: " + id);
         }
@@ -95,7 +95,7 @@ public class HostServicesImpl implements HostService {
                 .orElseThrow(() -> new RuntimeException("Error al actualizar al anfitrión"));
     }
 
-    private void validateHostUpdateData(HostDto hostDto) {
+    private void validateHostUpdateData(RequestHostDto hostDto) {
         if (hostDto.getName().trim().isEmpty()) {
             throw new IllegalArgumentException("El nombre no puede estar vacío");
         }
@@ -115,7 +115,7 @@ public class HostServicesImpl implements HostService {
 
     @Override
     public void deleteHost(Long id) {
-        HostDto host = getHostById(id);
+        RequestHostDto host = getHostById(id);
         Long accommodationCount = hostDao.countAccommodationsByHostId(id);
 
         if (accommodationCount > 0) {

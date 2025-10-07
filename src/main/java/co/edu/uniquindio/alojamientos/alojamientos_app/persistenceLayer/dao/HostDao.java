@@ -1,6 +1,7 @@
 package co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.dao;
 
-import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.HostDto;
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.RequestHostDto;
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.ResponseHostDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.entity.HostEntity;
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.mapper.HostMapper;
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.repository.HostRepository;
@@ -25,7 +26,7 @@ public class HostDao {
      * 3. Entity guardada → DTO (con Mapper)
      * 4. Retornar DTO al Service
      */
-    public HostDto save(HostDto hostDto) {
+    public ResponseHostDto save(RequestHostDto hostDto) {
         HostEntity hostEntity = hostMapper.hostDtoToHostEntity(hostDto);
         HostEntity savedHostEntity = hostRepository.save(hostEntity);
         return hostMapper.hostEntityToHostDto(savedHostEntity);
@@ -35,7 +36,7 @@ public class HostDao {
      * Busca un anfitrión por su ID único.
      * Retorna un Optional con el HostDto si existe.
      */
-    public Optional<HostDto> findById(Long id) {
+    public Optional<ResponseHostDto> findById(Long id) {
         return hostRepository.findById(id)
                 .map(hostMapper::hostEntityToHostDto);
     }
@@ -44,7 +45,7 @@ public class HostDao {
      * Busca un anfitrión por su correo electrónico.
      * Retorna un Optional con el HostDto si existe.
      */
-    public Optional<HostDto> findByEmail(String email) {
+    public Optional<ResponseHostDto> findByEmail(String email) {
         return hostRepository.findByEmail(email)
                 .map(hostMapper::hostEntityToHostDto);
     }
@@ -53,7 +54,7 @@ public class HostDao {
      * Obtiene la lista de todos los anfitriones registrados.
      * Retorna una lista de HostDto.
      */
-    public List<HostDto> findAll() {
+    public List<ResponseHostDto> findAll() {
         return hostMapper.getHostsDto(hostRepository.findAll());
     }
 
@@ -69,7 +70,7 @@ public class HostDao {
      * Actualiza la información de un anfitrión existente por su ID.
      * Si se encuentra, aplica cambios desde el DTO y retorna el HostDto actualizado.
      */
-    public Optional<HostDto> update(Long id, HostDto updateDto) {
+    public Optional<ResponseHostDto> update(Long id, RequestHostDto updateDto) {
         return hostRepository.findById(id)
                 .map(existingEntity -> {
                     hostMapper.updateEntityFromDto(updateDto, existingEntity);
@@ -96,7 +97,7 @@ public class HostDao {
     /**
      * Buscar a los anfitriones que tienen alojamientos.
      */
-    public List<HostDto> findHostsWithAccommodations() {
+    public List<ResponseHostDto> findHostsWithAccommodations() {
         List<HostEntity> hostEntities = hostRepository.findHostsWithAccommodations();
         return hostMapper.getHostsDto(hostEntities);
     }

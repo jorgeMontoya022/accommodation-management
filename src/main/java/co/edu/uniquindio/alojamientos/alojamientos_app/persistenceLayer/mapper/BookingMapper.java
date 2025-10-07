@@ -1,6 +1,7 @@
 package co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.mapper;
 
-import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.BookingDto;
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.RequestBookingDto;
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.ResponseBookingDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.entity.BookingEntity;
 import org.mapstruct.*;
 
@@ -14,19 +15,9 @@ public interface BookingMapper {
      * Convierte una entidad BookingEntity a su DTO correspondiente.
      */
     @Named("bookingEntityToBookingDto")
-    @Mapping(source = "id", target = "id")
-    @Mapping(source = "dateCheckin", target = "dateCheckin")
-    @Mapping(source = "dateCheckout", target = "dateCheckout")
-    @Mapping(source = "dateCreation", target = "dateCreation")
-    @Mapping(source = "dateCancellation", target = "dateCancellation")
-    @Mapping(source = "dateUpdate", target = "dateUpdate")
-    @Mapping(source = "statusReservation", target = "statusReservation")
     @Mapping(source = "accommodationAssociated.id", target = "idAccommodation")
     @Mapping(source = "guestEntity.id", target = "idGuest")
-    @Mapping(source = "quantityPeople", target = "quantityPeople")
-    @Mapping(source = "totalValue", target = "totalValue")
-    @Mapping(source = "reasonCancellation", target = "reasonCancellation")
-    BookingDto bookingEntityToBookingDto(BookingEntity bookingEntity);
+    ResponseBookingDto bookingEntityToBookingDto(BookingEntity bookingEntity);
 
 
     /**
@@ -47,7 +38,7 @@ public interface BookingMapper {
     @Mapping(source = "totalValue", target = "totalValue")
     @Mapping(source = "reasonCancellation", target = "reasonCancellation")
     @Mapping(target = "comments", ignore = true)
-    BookingEntity bookingDtoToBookingEntity(BookingDto bookingDto);
+    BookingEntity bookingDtoToBookingEntity(RequestBookingDto bookingDto);
 
 
     /**
@@ -76,7 +67,7 @@ public interface BookingMapper {
     @Mapping(target = "comments", ignore = true)                   // Relaciones no se actualizan aquí
     @Mapping(target = "reasonCancellation", ignore = true)         // Se maneja solo en cancelación
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateEntityFromDto(BookingDto bookingDto, @MappingTarget BookingEntity bookingEntity);
+    void updateEntityFromDto(RequestBookingDto bookingDto, @MappingTarget BookingEntity bookingEntity);
 
 
     /**
@@ -86,7 +77,7 @@ public interface BookingMapper {
      * @return lista de DTOs
      */
     @IterableMapping(qualifiedByName = "bookingEntityToBookingDto")
-    List<BookingDto> getBookingsDto(List<BookingEntity> bookingEntityList);
+    List<ResponseBookingDto> getBookingsDto(List<BookingEntity> bookingEntityList);
 
 
     /**
@@ -96,7 +87,7 @@ public interface BookingMapper {
      * @return lista de entidades
      */
     @IterableMapping(qualifiedByName = "bookingDtoToBookingEntity")
-    List<BookingEntity> getBookingsEntity(List<BookingDto> bookingDtoList);
+    List<BookingEntity> getBookingsEntity(List<RequestBookingDto> bookingDtoList);
 
 
 }

@@ -56,8 +56,8 @@ public interface CommentMapper {
      * - Permite actualización parcial tipo PATCH
      * - Ejemplo: Si solo envías {rating: 4}, solo se actualiza la calificación
      *
-     * @param reviewDto DTO con los datos a actualizar
-     * @param reviewEntity entidad existente que será actualizada
+     * @param commentDto DTO con los datos a actualizar
+     * @param commentEntity entidad existente que será actualizada
      */
     @Mapping(target = "id", ignore = true)                    // ID nunca cambia
     @Mapping(target = "dateCreation", ignore = true)          // Fecha de creación es inmutable
@@ -73,7 +73,7 @@ public interface CommentMapper {
     /**
      * Convierte una lista de entidades ReviewEntity a una lista de DTOs.
      *
-     * @param reviewEntityList lista de entidades a convertir
+     * @param commentEntityList lista de entidades a convertir
      * @return lista de DTOs
      */
     @IterableMapping(qualifiedByName = "reviewEntityToReviewDto")
@@ -83,7 +83,7 @@ public interface CommentMapper {
     /**
      * Convierte una lista de DTOs ReviewDto a una lista de entidades.
      *
-     * @param reviewDtoList lista de DTOs a convertir
+     * @param commentDtoList lista de DTOs a convertir
      * @return lista de entidades
      */
     @IterableMapping(qualifiedByName = "reviewDtoToReviewEntity")
