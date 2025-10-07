@@ -34,7 +34,7 @@ public class AccommodationEntity {
     private String latitude;
 
     @Column(name = "length_accommodation", nullable = false, length = 100)
-    private String length;
+    private String longitude;
 
     @Column(name = "price_night_accommodation", nullable = false)
     private double priceNight;
