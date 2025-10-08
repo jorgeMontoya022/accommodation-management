@@ -2,6 +2,7 @@ package co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.dao;
 
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.RequestHostDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.ResponseHostDto;
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service.HostService;
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.entity.HostEntity;
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.mapper.HostMapper;
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.repository.HostRepository;
@@ -36,9 +37,9 @@ public class HostDao {
      * Busca un anfitrión por su ID único.
      * Retorna un Optional con el HostDto si existe.
      */
-    public Optional<ResponseHostDto> findById(Long id) {
-        return hostRepository.findById(id)
-                .map(hostMapper::hostEntityToHostDto);
+    // En HostDao
+    public Optional<HostEntity> findById(Long id) {
+        return hostRepository.findById(id);
     }
 
     /**

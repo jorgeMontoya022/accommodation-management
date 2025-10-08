@@ -1,6 +1,8 @@
 package co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service;
 
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.RequestHostDto;
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.ResponseHostDto;
+import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.entity.HostEntity;
 
 /**
  * Servicio para la gestión de anfitriones
@@ -25,7 +27,7 @@ public interface HostService {
      * @throws IllegalArgumentException Si los datos no son válidos
      * @throws RuntimeException Si el email ya existe
      */
-    RequestHostDto createHost(RequestHostDto hostDto);
+    ResponseHostDto createHost(RequestHostDto hostDto);
 
     /**
      * Buscar anfitrión por ID
@@ -34,7 +36,7 @@ public interface HostService {
      * @return DTO del anfitrión encontrado
      * @throws RuntimeException Si el anfitrión no existe
      */
-    RequestHostDto getHostById(Long id);
+    ResponseHostDto getHostById(Long id);
 
     /**
      * Buscar anfitrión por email
@@ -43,7 +45,7 @@ public interface HostService {
      * @return DTO del anfitrión encontrado
      * @throws RuntimeException Si el anfitrión no existe
      */
-    RequestHostDto getHostByEmail(String email);
+    ResponseHostDto getHostByEmail(String email);
 
     /**
      * Actualizar anfitrión existente
@@ -59,7 +61,7 @@ public interface HostService {
      * @throws RuntimeException Si el anfitrión no existe
      * @throws IllegalArgumentException Si los datos no son válidos
      */
-    RequestHostDto updateHost(Long id, RequestHostDto hostDto);
+    ResponseHostDto updateHost(Long id, RequestHostDto hostDto);
 
     /**
      * Eliminar anfitrión
@@ -85,6 +87,14 @@ public interface HostService {
      * @throws RuntimeException Si el anfitrión no existe
      */
     Long getHostAccommodationCount(Long hostId);
+
+    /**
+     * Obtener entidad de anfitrión por ID (para uso interno)
+     * @param id ID del anfitrión
+     * @return Entity del anfitrión
+     * @throws RuntimeException Si el anfitrión no existe
+     */
+    HostEntity getHostEntityById(Long id);
 
     /**
      * Verificar si un email ya está en uso

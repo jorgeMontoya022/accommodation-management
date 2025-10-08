@@ -1,8 +1,11 @@
 package co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service.impl;
 
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.RequestHostDto;
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.ResponseHostDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service.HostService;
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.dao.HostDao;
+import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.entity.HostEntity;
+import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.mapper.HostMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,9 +20,10 @@ import java.util.regex.Pattern;
 @Slf4j
 public class HostServicesImpl implements HostService {
     private final HostDao hostDao;
+    private final HostMapper hostMapper;
 
     @Override
-    public RequestHostDto createHost(RequestHostDto hostDto) {
+    public ResponseHostDto createHost(RequestHostDto hostDto) {
         log.info("Creando nuevo anfitrión con email: {}", hostDto.getEmail());
 
         // Validación de negocio: Email único
@@ -28,46 +32,66 @@ public class HostServicesImpl implements HostService {
             throw new IllegalArgumentException("Ya existe un anfitrión con el email: " + hostDto.getEmail());
         }
 
-        validateHostCreateData(hostDto);
 
-        RequestHostDto createdHost = hostDao.save(hostDto);
+
+        ResponseHostDto createdHost = hostDao.save(hostDto);
         log.info("Anfitrión creado exitosamente con ID: {}", createdHost.getId());
         return createdHost;
     }
 
-    private void validateHostCreateData(RequestHostDto hostDto) {
-        if (hostDto.getName() == null || hostDto.getName().trim().isEmpty()) {
-            throw new IllegalArgumentException("El nombre del anfitrión es obligatorio");
-        }
+    /**
+     *  private void validateHostCreateData(RequestHostDto hostDto) {
+     *         if (hostDto.getName() == null || hostDto.getName().trim().isEmpty()) {
+     *             throw new IllegalArgumentException("El nombre del anfitrión es obligatorio");
+     *         }
+     *
+     *         if (hostDto.getName().length() > 100) {
+     *             throw new IllegalArgumentException("El nombre no puede exceder 100 caracteres");
+     *         }
+     *
+     *         if (hostDto.getEmail() == null || hostDto.getEmail().trim().isEmpty()) {
+     *             throw new IllegalArgumentException("El email no es válido");
+     *         }
+     *
+     *         if (!isValidEmail(hostDto.getEmail())) {
+     *             throw new IllegalArgumentException("El formato del email no es válido");
+     *         }
+     *
+     *         if (hostDto.getDateBirth() == null) {
+     *             throw new IllegalArgumentException("La fecha de nacimiento del anfitrión es obligatoria");
+     *         }
+     *
+     *         if (hostDto.getPhone() == null) {
+     *             throw new IllegalArgumentException("El número de teléfono del anfitrión es obligatorio");
+     *         }
+     *
+     *         if (!isValidPhone(hostDto.getPhone())) {
+     *             throw new IllegalArgumentException("El formato del teléfono no es válido");
+     *         }
+     *     }
+    */
 
-        if (hostDto.getName().length() > 100) {
-            throw new IllegalArgumentException("El nombre no puede exceder 100 caracteres");
-        }
 
-        if (hostDto.getEmail() == null || hostDto.getEmail().trim().isEmpty()) {
-            throw new IllegalArgumentException("El email no es válido");
-        }
-
-        if (!isValidEmail(hostDto.getEmail())) {
-            throw new IllegalArgumentException("El formato del email no es válido");
-        }
-
-        if (hostDto.getDateBirth() == null) {
-            throw new IllegalArgumentException("La fecha de nacimiento del anfitrión es obligatoria");
-        }
-
-        if (hostDto.getPhone() == null) {
-            throw new IllegalArgumentException("El número de teléfono del anfitrión es obligatorio");
-        }
-
-        if (!isValidPhone(hostDto.getPhone())) {
-            throw new IllegalArgumentException("El formato del teléfono no es válido");
-        }
-    }
 
     @Override
     @Transactional(readOnly = true)
-    public RequestHostDto getHostById(Long id) {
+    public ResponseHostDto getHostById(Long id) {
+        HostEntity host = findHostEntityById(id);
+        return hostMapper.hostEntityToHostDto(host);
+    }
+
+    /**
+     * Obtener entidad de anfitrión por ID (para uso interno entre Services)
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public HostEntity getHostEntityById(Long id) {
+        return findHostEntityById(id);
+    }
+    /**
+     * Método privado reutilizable para buscar la entidad
+     */
+    private HostEntity findHostEntityById(Long id) {
         return hostDao.findById(id)
                 .orElseThrow(() -> {
                     log.warn("Anfitrión no encontrado con ID: {}", id);
@@ -77,7 +101,7 @@ public class HostServicesImpl implements HostService {
 
     @Override
     @Transactional(readOnly = true)
-    public RequestHostDto getHostByEmail(String email) {
+    public ResponseHostDto getHostByEmail(String email) {
         return hostDao.findByEmail(email)
                 .orElseThrow(() -> {
                     log.warn("Anfitrión no encontrado con email: {}", email);
@@ -86,7 +110,7 @@ public class HostServicesImpl implements HostService {
     }
 
     @Override
-    public RequestHostDto updateHost(Long id, RequestHostDto hostDto) {
+    public ResponseHostDto updateHost(Long id, RequestHostDto hostDto) {
         if (!hostDao.findById(id).isPresent()) {
             throw new RuntimeException("Anfitrión no encontrado con ID: " + id);
         }
@@ -115,7 +139,7 @@ public class HostServicesImpl implements HostService {
 
     @Override
     public void deleteHost(Long id) {
-        RequestHostDto host = getHostById(id);
+        ResponseHostDto host = getHostById(id);
         Long accommodationCount = hostDao.countAccommodationsByHostId(id);
 
         if (accommodationCount > 0) {

@@ -1,5 +1,6 @@
 package co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.mapper;
 
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.RequestAccommodationDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.ResponseAccommodationDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.entity.AccommodationEntity;
 import org.mapstruct.*;
@@ -30,6 +31,10 @@ public interface AccommodationMapper {
     ResponseAccommodationDto accommodationEntityToAccommodationDto(AccommodationEntity accommodationEntity);
 
 
+    @Named("accommodationEntityToAccommodationRequestDto")
+    RequestAccommodationDto accommodationEntityToAccommodationRequestDto(AccommodationEntity accommodation);
+
+
     /**
      * Convierte un DTO AccommodationDto a una nueva entidad AccommodationEntity.
      * IGNORA las fechas de auditoría y relaciones porque se manejan por separado.
@@ -51,7 +56,7 @@ public interface AccommodationMapper {
     @Mapping(target = "hostEntity", ignore = true)
     @Mapping(target = "images", ignore = true)
     @Mapping(target = "comments", ignore = true)
-    AccommodationEntity accommodationDtoToAccommodationEntity(ResponseAccommodationDto accommodationDto);
+    AccommodationEntity accommodationDtoToAccommodationEntity(RequestAccommodationDto accommodationDto);
 
 
     /**
@@ -79,7 +84,7 @@ public interface AccommodationMapper {
     @Mapping(target = "images", ignore = true)                // Relaciones no se actualizan aquí
     @Mapping(target = "comments", ignore = true)              // Relaciones no se actualizan aquí
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateEntityFromDto(ResponseAccommodationDto accommodationDto, @MappingTarget AccommodationEntity accommodationEntity);
+    void updateEntityFromDto(RequestAccommodationDto accommodationDto, @MappingTarget AccommodationEntity accommodationEntity);
 
 
     /**

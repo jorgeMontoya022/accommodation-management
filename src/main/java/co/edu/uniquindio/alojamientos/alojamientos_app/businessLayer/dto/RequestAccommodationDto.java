@@ -5,9 +5,15 @@ import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.entity.T
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class RequestAccommodationDto {
 
     @Schema(description = "Título del alojamiento", example = "Casa rural con vista al mar", requiredMode = Schema.RequiredMode.REQUIRED)
@@ -48,5 +54,5 @@ public class RequestAccommodationDto {
 
     @Schema(description = "Id del anfitrión asociado al alojamiento", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = "El id del anfitrión es obligatorio")
-    private String idHost;
+    private Long idHost;
 }
