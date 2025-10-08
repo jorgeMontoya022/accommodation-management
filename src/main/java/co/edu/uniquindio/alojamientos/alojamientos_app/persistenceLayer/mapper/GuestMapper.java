@@ -2,6 +2,7 @@ package co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.mapper;
 
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.RequestGuestDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.ResponseGuestDto;
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.UpdateGuestDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.entity.GuestEntity;
 import org.mapstruct.*;
 
@@ -53,7 +54,7 @@ public interface GuestMapper {
     @Mapping(target = "bookingEntityList", ignore = true)     // Relaciones no se actualizan aquí
     @Mapping(target = "commentsWritten", ignore = true)       // Relaciones no se actualizan aquí
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateEntityFromDto(RequestGuestDto guestDto, @MappingTarget GuestEntity guestEntity);
+    void updateEntityFromDto(UpdateGuestDto guestDto, @MappingTarget GuestEntity guestEntity);
 
 
     /**

@@ -2,7 +2,7 @@ package co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.dao;
 
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.RequestHostDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.ResponseHostDto;
-import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service.HostService;
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.UpdateHostDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.entity.HostEntity;
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.mapper.HostMapper;
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.repository.HostRepository;
@@ -20,12 +20,9 @@ public class HostDao {
 
     /**
      * Crear un nuevo anfitrión
-     * <p>
-     * FLUJO:
-     * 1. CreateDTO → Entity (con Mapper)
-     * 2. Guardar Entity en BD (con Repository)
-     * 3. Entity guardada → DTO (con Mapper)
-     * 4. Retornar DTO al Service
+     * @PrePersist se encarga automáticamente de:
+     * - dateRegister = now()
+     * - active = true
      */
     public ResponseHostDto save(RequestHostDto hostDto) {
         HostEntity hostEntity = hostMapper.hostDtoToHostEntity(hostDto);
@@ -34,17 +31,21 @@ public class HostDao {
     }
 
     /**
-     * Busca un anfitrión por su ID único.
-     * Retorna un Optional con el HostDto si existe.
+     * Obtener anfitrión por ID (retorna Entity)
      */
-    // En HostDao
     public Optional<HostEntity> findById(Long id) {
         return hostRepository.findById(id);
     }
 
     /**
-     * Busca un anfitrión por su correo electrónico.
-     * Retorna un Optional con el HostDto si existe.
+     * Obtener anfitrión por email (retorna Entity)
+     */
+    public Optional<HostEntity> findByEmailEntity(String email) {
+        return hostRepository.findByEmail(email);
+    }
+
+    /**
+     * Obtener anfitrión por email (retorna DTO)
      */
     public Optional<ResponseHostDto> findByEmail(String email) {
         return hostRepository.findByEmail(email)
@@ -52,26 +53,24 @@ public class HostDao {
     }
 
     /**
-     * Obtiene la lista de todos los anfitriones registrados.
-     * Retorna una lista de HostDto.
+     * Listar todos los anfitriones activos
      */
     public List<ResponseHostDto> findAll() {
         return hostMapper.getHostsDto(hostRepository.findAll());
     }
 
     /**
-     * Verifica si existe un anfitrión con el correo dado.
-     * Retorna true si existe, false en caso contrario.
+     * Verificar si existe email
      */
     public boolean existsByEmail(String email) {
         return hostRepository.existsByEmail(email);
     }
 
     /**
-     * Actualiza la información de un anfitrión existente por su ID.
-     * Si se encuentra, aplica cambios desde el DTO y retorna el HostDto actualizado.
+     * Actualizar anfitrión
+     * @PreUpdate se encarga automáticamente de asignar dateUpdate
      */
-    public Optional<ResponseHostDto> update(Long id, RequestHostDto updateDto) {
+    public Optional<ResponseHostDto> update(Long id, UpdateHostDto updateDto) {
         return hostRepository.findById(id)
                 .map(existingEntity -> {
                     hostMapper.updateEntityFromDto(updateDto, existingEntity);
@@ -81,11 +80,16 @@ public class HostDao {
     }
 
     /**
-     * Eliminar anfitrión por ID
-     *
-     * RETORNA: boolean indicando si se eliminó
-     * - true: Se eliminó exitosamente
-     * - false: No existía el anfitrión
+     * Guardar una entidad de host (usado después de modificarla)
+     * @PreUpdate se encarga automáticamente de asignar dateUpdate
+     */
+    public HostEntity updateEntity(HostEntity hostEntity) {
+        return hostRepository.save(hostEntity);
+    }
+
+    /**
+     * Eliminar anfitrión (hard delete) - No recomendado
+     * En su lugar, usar soft delete en el Service
      */
     public boolean deleteById(Long id) {
         if (hostRepository.existsById(id)) {
@@ -96,7 +100,7 @@ public class HostDao {
     }
 
     /**
-     * Buscar a los anfitriones que tienen alojamientos.
+     * Buscar anfitriones con alojamientos activos
      */
     public List<ResponseHostDto> findHostsWithAccommodations() {
         List<HostEntity> hostEntities = hostRepository.findHostsWithAccommodations();
@@ -104,18 +108,25 @@ public class HostDao {
     }
 
     /**
-     * Cuenta la cantidad de alojamientos que tiene un anfitrión
-     * @param id ID del anfitrión
-     * @return Cantidad de alojamientos
+     * Contar TODOS los alojamientos de un host (activos e inactivos)
      */
     public Long countAccommodationsByHostId(Long id) {
         return hostRepository.countAccommodationsByHostId(id);
     }
 
     /**
-     * Verifica si un anfitrión está activo
-     * @param id ID del anfitrión
-     * @return true si está activo, false si no existe o está inactivo
+     * Contar solo los alojamientos ACTIVOS de un host
+     */
+    public Long countActiveAccommodationsByHostId(Long id) {
+        return hostRepository.findById(id)
+                .map(host -> host.getAccommodationEntityList().stream()
+                        .filter(acc -> acc.getStatusAccommodation().name().equals("ACTIVE"))
+                        .count())
+                .orElse(0L);
+    }
+
+    /**
+     * Verificar si un anfitrión está activo
      */
     public boolean isActiveById(Long id) {
         return hostRepository.isActiveById(id).orElse(false);

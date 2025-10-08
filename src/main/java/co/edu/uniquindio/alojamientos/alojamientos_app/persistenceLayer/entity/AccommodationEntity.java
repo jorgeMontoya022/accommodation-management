@@ -71,4 +71,15 @@ public class AccommodationEntity {
     @OneToMany(mappedBy = "accommodationEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CommentEntity> comments = new ArrayList<>();
 
+    @PrePersist
+    public void onCreate() {
+        this.dateCreation = LocalDateTime.now();
+        this.setStatusAccommodation(StatusAccommodation.ACTIVE);
+    }
+
+    @PreUpdate
+    public void onUpdate() {
+        this.dateUpdate = LocalDateTime.now();
+    }
+
 }

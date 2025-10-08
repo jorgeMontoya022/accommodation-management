@@ -1,18 +1,18 @@
 package co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service.impl;
 
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.ChangePasswordDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.RequestHostDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.ResponseHostDto;
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.UpdateHostDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service.HostService;
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.dao.HostDao;
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.entity.HostEntity;
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.mapper.HostMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Service
 @Transactional
@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 public class HostServicesImpl implements HostService {
     private final HostDao hostDao;
     private final HostMapper hostMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public ResponseHostDto createHost(RequestHostDto hostDto) {
@@ -32,46 +33,11 @@ public class HostServicesImpl implements HostService {
             throw new IllegalArgumentException("Ya existe un anfitrión con el email: " + hostDto.getEmail());
         }
 
-
-
+        // El DAO se encarga de guardar y mapear
         ResponseHostDto createdHost = hostDao.save(hostDto);
         log.info("Anfitrión creado exitosamente con ID: {}", createdHost.getId());
         return createdHost;
     }
-
-    /**
-     *  private void validateHostCreateData(RequestHostDto hostDto) {
-     *         if (hostDto.getName() == null || hostDto.getName().trim().isEmpty()) {
-     *             throw new IllegalArgumentException("El nombre del anfitrión es obligatorio");
-     *         }
-     *
-     *         if (hostDto.getName().length() > 100) {
-     *             throw new IllegalArgumentException("El nombre no puede exceder 100 caracteres");
-     *         }
-     *
-     *         if (hostDto.getEmail() == null || hostDto.getEmail().trim().isEmpty()) {
-     *             throw new IllegalArgumentException("El email no es válido");
-     *         }
-     *
-     *         if (!isValidEmail(hostDto.getEmail())) {
-     *             throw new IllegalArgumentException("El formato del email no es válido");
-     *         }
-     *
-     *         if (hostDto.getDateBirth() == null) {
-     *             throw new IllegalArgumentException("La fecha de nacimiento del anfitrión es obligatoria");
-     *         }
-     *
-     *         if (hostDto.getPhone() == null) {
-     *             throw new IllegalArgumentException("El número de teléfono del anfitrión es obligatorio");
-     *         }
-     *
-     *         if (!isValidPhone(hostDto.getPhone())) {
-     *             throw new IllegalArgumentException("El formato del teléfono no es válido");
-     *         }
-     *     }
-    */
-
-
 
     @Override
     @Transactional(readOnly = true)
@@ -80,17 +46,12 @@ public class HostServicesImpl implements HostService {
         return hostMapper.hostEntityToHostDto(host);
     }
 
-    /**
-     * Obtener entidad de anfitrión por ID (para uso interno entre Services)
-     */
     @Override
     @Transactional(readOnly = true)
     public HostEntity getHostEntityById(Long id) {
         return findHostEntityById(id);
     }
-    /**
-     * Método privado reutilizable para buscar la entidad
-     */
+
     private HostEntity findHostEntityById(Long id) {
         return hostDao.findById(id)
                 .orElseThrow(() -> {
@@ -102,64 +63,58 @@ public class HostServicesImpl implements HostService {
     @Override
     @Transactional(readOnly = true)
     public ResponseHostDto getHostByEmail(String email) {
-        return hostDao.findByEmail(email)
+        HostEntity host = hostDao.findByEmailEntity(email)
                 .orElseThrow(() -> {
                     log.warn("Anfitrión no encontrado con email: {}", email);
                     return new RuntimeException("Anfitrión no encontrado con el email: " + email);
                 });
+        return hostMapper.hostEntityToHostDto(host);
     }
 
     @Override
-    public ResponseHostDto updateHost(Long id, RequestHostDto hostDto) {
-        if (!hostDao.findById(id).isPresent()) {
-            throw new RuntimeException("Anfitrión no encontrado con ID: " + id);
-        }
-        validateHostUpdateData(hostDto);
-        return hostDao.update(id, hostDto)
-                .orElseThrow(() -> new RuntimeException("Error al actualizar al anfitrión"));
-    }
+    public ResponseHostDto updateHost(Long id, UpdateHostDto hostDto) {
+        // 1. Obtener la entidad
+        HostEntity host = findHostEntityById(id);
 
-    private void validateHostUpdateData(RequestHostDto hostDto) {
-        if (hostDto.getName().trim().isEmpty()) {
-            throw new IllegalArgumentException("El nombre no puede estar vacío");
-        }
+        // 2. Aplicar cambios (el mapper actualiza los campos)
+        hostMapper.updateEntityFromDto(hostDto, host);
 
-        if (hostDto.getName().length() > 100) {
-            throw new IllegalArgumentException("El nombre no puede exceder 100 caracteres");
-        }
+        // 3. Guardar (automáticamente @PreUpdate asigna dateUpdate)
+        HostEntity updated = hostDao.updateEntity(host);
 
-        if (hostDto.getPhone().trim().isEmpty()) {
-            throw new IllegalArgumentException("El teléfono no puede estar vacío");
-        }
+        log.info("Anfitrión actualizado exitosamente con ID: {}", id);
 
-        if (hostDto.getPhone().length() > 15) {
-            throw new IllegalArgumentException("El teléfono no puede exceder 15 caracteres");
-        }
+        return hostMapper.hostEntityToHostDto(updated);
     }
 
     @Override
     public void deleteHost(Long id) {
-        ResponseHostDto host = getHostById(id);
-        Long accommodationCount = hostDao.countAccommodationsByHostId(id);
+        // 1. Obtener la entidad
+        HostEntity host = findHostEntityById(id);
 
-        if (accommodationCount > 0) {
-            log.warn("Intento de eliminar anfitrión con alojamientos. ID: {}, Alojamientos: {}", id, accommodationCount);
+        // 2. Verificar que no tiene alojamientos ACTIVOS
+        Long activeAccommodationCount = hostDao.countActiveAccommodationsByHostId(id);
+
+        if (activeAccommodationCount > 0) {
+            log.warn("Intento de eliminar anfitrión con alojamientos activos. ID: {}, Alojamientos: {}", id, activeAccommodationCount);
             throw new IllegalStateException(
-                    String.format("No se puede eliminar el anfitrión porque tiene %d alojamiento(s) asociado(s)", accommodationCount)
+                    String.format("No se puede eliminar el anfitrión porque tiene %d alojamiento(s) activo(s)", activeAccommodationCount)
             );
         }
 
-        boolean deleted = hostDao.deleteById(id);
-        if (!deleted) {
-            throw new RuntimeException("Error al eliminar al anfitrión con ID: " + id);
-        }
-        log.info("Anfitrión eliminado exitosamente ID: {}", id);
+        // 3. Hacer soft delete: cambiar estado a inactivo
+        host.setActive(false);
+
+        // 4. Guardar (automáticamente @PreUpdate asigna dateUpdate)
+        hostDao.updateEntity(host);
+
+        log.info("Anfitrión desactivado exitosamente (soft delete) ID: {}", id);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Long getHostAccommodationCount(Long hostId) {
-        getHostById(hostId);
+        findHostEntityById(hostId); // Validar que existe
         return hostDao.countAccommodationsByHostId(hostId);
     }
 
@@ -178,17 +133,32 @@ public class HostServicesImpl implements HostService {
         return isActive;
     }
 
-    // Métodos auxiliares de validación
-    private boolean isValidPhone(String phone) {
-        Pattern patron = Pattern.compile("^\\+?57?[0-9\\s\\-\\(\\)]{7,15}$");
-        Matcher matcher = patron.matcher(phone);
-        return matcher.matches();
-    }
+    @Override
+    public void changePassword(Long id, ChangePasswordDto changePasswordDto) {
 
-    private boolean isValidEmail(String email) {
-        Pattern patron = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-                + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
-        Matcher matcher = patron.matcher(email);
-        return matcher.find();
+        log.info("Cambiando contraseña para anfitrión ID: {}", id);
+
+        HostEntity host = findHostEntityById(id);
+
+        if(!changePasswordDto.getNewPassword().equals(changePasswordDto.getConfirmPassword())) {
+            throw new IllegalArgumentException("Las nuevas contraseñas no coinciden");
+        }
+
+        if (!passwordEncoder.matches(changePasswordDto.getCurrentPassword(), host.getPassword())) {
+            log.warn("Intento de cambiar contraseña con contraseña actual incorrecta. ID: {}", id);
+            throw new IllegalArgumentException("La contraseña actual es incorrecta");
+        }
+
+        if (passwordEncoder.matches(changePasswordDto.getNewPassword(), host.getPassword())) {
+            throw new IllegalArgumentException("La nueva contraseña debe ser diferente a la actual");
+        }
+
+        String encryptedPassword = passwordEncoder.encode(changePasswordDto.getNewPassword());
+        host.setPassword(encryptedPassword);
+
+        hostDao.updateEntity(host);
+
+        log.info("Contraseña cambiada exitosamente para anfitrión ID: {}", id);
+
     }
 }

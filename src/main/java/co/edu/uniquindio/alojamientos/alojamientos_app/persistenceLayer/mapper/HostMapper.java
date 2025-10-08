@@ -2,6 +2,7 @@ package co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.mapper;
 
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.RequestHostDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.ResponseHostDto;
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.UpdateHostDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.entity.HostEntity;
 import org.mapstruct.*;
 
@@ -65,7 +66,7 @@ public interface HostMapper {
     @Mapping(target = "active", ignore = true)                   // Se maneja en el Service (soft delete)
     @Mapping(target = "accommodationEntityList", ignore = true)  // Relaciones no se actualizan aquí
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateEntityFromDto(RequestHostDto hostDto, @MappingTarget HostEntity hostEntity);
+    void updateEntityFromDto(UpdateHostDto hostDto, @MappingTarget HostEntity hostEntity);
 
 
     /**

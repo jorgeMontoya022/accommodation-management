@@ -2,13 +2,13 @@ package co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.dao;
 
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.RequestGuestDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.ResponseGuestDto;
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.UpdateGuestDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.entity.GuestEntity;
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.mapper.GuestMapper;
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.repository.GuestRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -19,12 +19,7 @@ public class GuestDao {
 
     /**
      * Crear un nuevo huésped
-     * <p>
-     * FLUJO:
-     * 1. CreateDTO → Entity (con Mapper)
-     * 2. Guardar Entity en BD (con Repository)
-     * 3. Entity guardada → DTO (con Mapper)
-     * 4. Retornar DTO al Service
+     * @PrePersist se encarga automáticamente de dateRegister y active=true
      */
     public ResponseGuestDto save(RequestGuestDto guestDto) {
         GuestEntity guestEntity = guestMapper.guestDtoToGuestEntity(guestDto);
@@ -33,8 +28,7 @@ public class GuestDao {
     }
 
     /**
-     * Busca un huésped por su ID único.
-     * Retorna un Optional con el GuestDto si existe.
+     * Obtener huésped por ID (retorna DTO)
      */
     public Optional<ResponseGuestDto> findById(Long id) {
         return guestRepository.findById(id)
@@ -42,8 +36,21 @@ public class GuestDao {
     }
 
     /**
-     * Busca un huésped por su correo electrónico.
-     * Retorna un Optional con el GuestDto si existe.
+     * Obtener huésped por ID (retorna Entity)
+     */
+    public Optional<GuestEntity> findByIdEntity(Long id) {
+        return guestRepository.findById(id);
+    }
+
+    /**
+     * Obtener huésped por email (retorna Entity)
+     */
+    public Optional<GuestEntity> findByEmailEntity(String email) {
+        return guestRepository.findByEmail(email);
+    }
+
+    /**
+     * Obtener huésped por email (retorna DTO)
      */
     public Optional<ResponseGuestDto> findByEmail(String email) {
         return guestRepository.findByEmail(email)
@@ -51,27 +58,17 @@ public class GuestDao {
     }
 
     /**
-     * Obtiene la lista de todos los huéspedes registrados.
-     * Retorna una lista de GuestDto.
+     * Verificar si existe email
      */
-    public List<ResponseGuestDto> findAll() {
-        return guestMapper.getGuestsDto(guestRepository.findAll());
-    }
-
-
-    /**
-     * Verifica si existe un huésped con el correo dado.
-     * Retorna true si existe, false en caso contrario.
-     */
-    public boolean exitsByEmail(String email) {
+    public boolean existsByEmail(String email) {
         return guestRepository.exitsByEmail(email);
     }
 
     /**
-     * Actualiza la información de un huésped existente por su ID.
-     * Si se encuentra, aplica cambios desde el DTO y retorna el GuestDto actualizado.
+     * Actualizar huésped
+     * @PreUpdate se encarga automáticamente de asignar dateUpdate
      */
-    public Optional<ResponseGuestDto> update(Long id, RequestGuestDto updateDto){
+    public Optional<ResponseGuestDto> update(Long id, UpdateGuestDto updateDto) {
         return guestRepository.findById(id)
                 .map(existingEntity -> {
                     guestMapper.updateEntityFromDto(updateDto, existingEntity);
@@ -81,39 +78,40 @@ public class GuestDao {
     }
 
     /**
-     * Eliminar huesped por ID
-     *
-     * RETORNA: boolean indicando si se eliminó
-     * - true: Se eliminó exitosamente
-     * - false: No existía el vendedor
+     * Guardar una entidad de guest (usado después de modificarla)
+     * @PreUpdate se encarga automáticamente de asignar dateUpdate
      */
-    public boolean deleteById(Long id) {
-        if (guestRepository.existsById(id)) {
-            guestRepository.deleteById(id);
-            return true;
-        }
-        return false;
+    public GuestEntity updateEntity(GuestEntity guestEntity) {
+        return guestRepository.save(guestEntity);
     }
 
     /**
-     *Buscar a los huespedes que tienen
-     * reservas .
+     * Contar TODAS las reservas de un huésped
      */
-    public List<ResponseGuestDto> findGuestsWithBookings() {
-        List<GuestEntity> guestEntities = guestRepository.findGuestsWithBookings();
-        return guestMapper.getGuestsDto(guestEntities);
-    }
-
     public Long countBookingByGuestId(Long id) {
-        return guestRepository.countBookingGuestById(id);
+        return guestRepository.findById(id)
+                .map(guest -> (long) guest.getBookingEntityList().size())
+                .orElse(0L);
     }
 
     /**
-     * Verifica si un huésped está activo
-     * @param id ID del huésped
-     * @return true si está activo, false si no existe o está inactivo
+     * Contar solo las reservas ACTIVAS de un huésped
+     */
+    public Long countActiveBookingByGuestId(Long id) {
+        return guestRepository.findById(id)
+                .map(guest -> guest.getBookingEntityList().stream()
+                        .filter(booking -> booking.getStatusReservation().name().equals("CONFIRMED")
+                                || booking.getStatusReservation().name().equals("PENDING"))
+                        .count())
+                .orElse(0L);
+    }
+
+    /**
+     * Verificar si un huésped está activo
      */
     public boolean isActiveById(Long id) {
-        return guestRepository.isActiveById(id).orElse(false);
+        return guestRepository.findById(id)
+                .map(GuestEntity::isActive)
+                .orElse(false);
     }
 }

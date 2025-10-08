@@ -1,7 +1,9 @@
 package co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service;
 
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.ChangePasswordDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.RequestHostDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.ResponseHostDto;
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.UpdateHostDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.entity.HostEntity;
 
 /**
@@ -61,7 +63,7 @@ public interface HostService {
      * @throws RuntimeException Si el anfitrión no existe
      * @throws IllegalArgumentException Si los datos no son válidos
      */
-    ResponseHostDto updateHost(Long id, RequestHostDto hostDto);
+    ResponseHostDto updateHost(Long id, UpdateHostDto hostDto);
 
     /**
      * Eliminar anfitrión
@@ -115,4 +117,6 @@ public interface HostService {
      * @return true si está activo, false si no está activo o no existe
      */
     boolean isActiveHost(Long id);
+
+    void changePassword(Long id, ChangePasswordDto changePasswordDto);
 }

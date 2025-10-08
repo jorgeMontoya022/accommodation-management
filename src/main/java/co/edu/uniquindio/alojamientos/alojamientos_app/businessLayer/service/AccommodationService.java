@@ -4,6 +4,8 @@ import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.Request
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.ResponseAccommodationDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.entity.AccommodationEntity;
 
+import java.util.List;
+
 public interface AccommodationService {
 
     ResponseAccommodationDto createAccommodation(RequestAccommodationDto requestAccommodationDto, Long idHost);
@@ -13,4 +15,6 @@ public interface AccommodationService {
     void deleteAccommodation(Long id);
 
     AccommodationEntity getAccommodationById(Long id);
+
+    List<ResponseAccommodationDto> getAccommodationsByCity(String city);
 }

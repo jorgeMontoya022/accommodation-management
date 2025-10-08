@@ -8,6 +8,7 @@ import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.reposito
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -19,6 +20,22 @@ public class AccommodationDao {
     public ResponseAccommodationDto save(AccommodationEntity entity) {
         AccommodationEntity saved = accommodationRepository.save(entity);
         return accommodationMapper.accommodationEntityToAccommodationDto(saved);
+    }
+
+    /**
+     * Guardar una nueva entidad de alojamiento
+     * @PrePersist se encarga automáticamente de asignar dateCreation
+     */
+    public AccommodationEntity saveEntity(AccommodationEntity accommodationEntity) {
+        return accommodationRepository.save(accommodationEntity);
+    }
+
+    /**
+     * Guardar una entidad de alojamiento (usado después de modificarla)
+     * @PreUpdate se encarga automáticamente de asignar dateUpdate
+     */
+    public AccommodationEntity updateEntity(AccommodationEntity accommodationEntity) {
+        return accommodationRepository.save(accommodationEntity);
     }
 
 
@@ -45,5 +62,9 @@ public class AccommodationDao {
             return true;
         }
         return false;
+    }
+
+    public List<AccommodationEntity> findByCity (String city) {
+        return accommodationRepository.findByCity(city);
     }
 }

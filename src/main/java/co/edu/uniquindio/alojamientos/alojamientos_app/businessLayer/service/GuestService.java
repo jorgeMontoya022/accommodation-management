@@ -1,8 +1,11 @@
 package co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service;
 
 
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.ChangePasswordDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.RequestGuestDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.ResponseGuestDto;
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.UpdateGuestDto;
+import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.entity.GuestEntity;
 
 public interface GuestService {
 
@@ -55,7 +58,7 @@ public interface GuestService {
      * @return DTO del huésped actualizado
      * @throws RuntimeException Si el huésped no existe
      */
-    ResponseGuestDto updateGuest(Long id, RequestGuestDto guestDto);
+    ResponseGuestDto updateGuest(Long id, UpdateGuestDto guestDto);
 
 
     /**
@@ -102,6 +105,10 @@ public interface GuestService {
      * @return true si está activo, false si no está activo
      */
     boolean isActiveGuest(Long id);
+
+    GuestEntity getGuestEntityById(Long id);
+
+    void changePassword(Long id, ChangePasswordDto changePasswordDto);
 
 
 
