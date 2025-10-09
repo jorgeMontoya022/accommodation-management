@@ -27,6 +27,13 @@ public class GuestDao {
         return guestMapper.guestEntityToGuestDto(savedGuestEntity);
     }
 
+    public ResponseGuestDto saveEntity(GuestEntity guestEntity) {
+        GuestEntity saved = guestRepository.save(guestEntity);
+        return guestMapper.guestEntityToGuestDto(saved);
+    }
+
+
+
     /**
      * Obtener huésped por ID (retorna DTO)
      */
@@ -114,4 +121,6 @@ public class GuestDao {
                 .map(GuestEntity::isActive)
                 .orElse(false);
     }
+
+
 }

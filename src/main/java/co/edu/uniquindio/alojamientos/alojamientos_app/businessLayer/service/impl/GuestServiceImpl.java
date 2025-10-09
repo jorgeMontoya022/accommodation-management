@@ -27,14 +27,20 @@ public class GuestServiceImpl implements GuestService {
     public ResponseGuestDto createGuest(RequestGuestDto guestDto) {
         log.info("Creando nuevo huésped con email: {}", guestDto.getEmail());
 
-        // Validación de negocio: Email único
         if (guestDao.existsByEmail(guestDto.getEmail())) {
             log.warn("Intento de crear huésped con email duplicado: {}", guestDto.getEmail());
             throw new IllegalArgumentException("Ya existe un huésped con el email: " + guestDto.getEmail());
         }
 
-        // @PrePersist se encarga automáticamente de dateRegister y active=true
-        ResponseGuestDto createdGuest = guestDao.save(guestDto);
+        // 1. Mapear DTO a Entity
+        GuestEntity guestEntity = guestMapper.guestDtoToGuestEntity(guestDto);
+
+        // 2. Encriptar la contraseña
+        String encryptedPassword = passwordEncoder.encode(guestDto.getPassword());
+        guestEntity.setPassword(encryptedPassword);
+
+        // 3. Guardar
+        ResponseGuestDto createdGuest = guestDao.saveEntity(guestEntity);
         log.info("Huésped creado exitosamente con ID: {}", createdGuest.getId());
 
         return createdGuest;

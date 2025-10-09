@@ -31,6 +31,15 @@ public class HostDao {
     }
 
     /**
+     * Guardar una nueva entidad de host
+     * @PrePersist se encarga automáticamente de dateRegister y active=true
+     */
+    public ResponseHostDto saveEntity(HostEntity hostEntity) {
+        HostEntity saved = hostRepository.save(hostEntity);
+        return hostMapper.hostEntityToHostDto(saved);
+    }
+
+    /**
      * Obtener anfitrión por ID (retorna Entity)
      */
     public Optional<HostEntity> findById(Long id) {

@@ -4,6 +4,8 @@ import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.ChangeP
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.RequestHostDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.ResponseHostDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.UpdateHostDto;
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.externalServiceDto.SendEmailDto;
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service.EmailService;
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service.HostService;
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.dao.HostDao;
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.entity.HostEntity;
@@ -22,6 +24,7 @@ public class HostServicesImpl implements HostService {
     private final HostDao hostDao;
     private final HostMapper hostMapper;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     @Override
     public ResponseHostDto createHost(RequestHostDto hostDto) {
@@ -33,10 +36,40 @@ public class HostServicesImpl implements HostService {
             throw new IllegalArgumentException("Ya existe un anfitrión con el email: " + hostDto.getEmail());
         }
 
-        // El DAO se encarga de guardar y mapear
-        ResponseHostDto createdHost = hostDao.save(hostDto);
+        // 1. Mapear DTO a Entity
+        HostEntity hostEntity = hostMapper.hostDtoToHostEntity(hostDto);
+
+        // 2. Encriptar la contraseña antes de guardar
+        String encryptedPassword = passwordEncoder.encode(hostDto.getPassword());
+        hostEntity.setPassword(encryptedPassword);
+
+        // 3. Guardar usando el DAO
+        ResponseHostDto createdHost = hostDao.saveEntity(hostEntity);
+
         log.info("Anfitrión creado exitosamente con ID: {}", createdHost.getId());
+
+        try {
+            SendEmailDto welcomeEmail = SendEmailDto.builder()
+                    .recipient(createdHost.getEmail())
+                    .subject("¡Bienvenido a Alojamientos Úniquindío!")
+                    .body(buildWelcomeEmailBody(createdHost.getName()))
+                    .build();
+            emailService.sendMail(welcomeEmail);
+            log.info("Email de bienvenida enviado a: {}", createdHost.getEmail());
+        } catch (Exception e) {
+            log.error("Error al enviar email de bienvenida para anfitrión ID: {}", createdHost.getId(), e);
+        }
         return createdHost;
+    }
+
+    private String buildWelcomeEmailBody(String name) {
+        return "¡Hola " + name + "!\n\n" +
+                "Bienvenido a Alojamientos Úniquindío.\n" +
+                "Tu cuenta ha sido creada exitosamente.\n\n" +
+                "Ahora puedes comenzar a crear tus alojamientos y recibir huéspedes.\n\n" +
+                "Si tienes alguna pregunta, no dudes en contactarnos.\n\n" +
+                "Saludos,\n" +
+                "El equipo de Alojamientos Úniquindío";
     }
 
     @Override
