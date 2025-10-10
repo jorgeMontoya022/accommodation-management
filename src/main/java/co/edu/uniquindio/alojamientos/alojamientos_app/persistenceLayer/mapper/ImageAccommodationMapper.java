@@ -6,8 +6,7 @@ import org.mapstruct.*;
 
 import java.util.List;
 
-
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.WARN)
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ImageAccommodationMapper {
 
     /**
@@ -15,6 +14,7 @@ public interface ImageAccommodationMapper {
      */
     @Named("imageAccommodationEntityToImageAccommodationDto")
     @Mapping(source = "accommodationEntity.id", target = "idAccommodation")
+    @Mapping(source = "principal", target = "isPrincipal")
     ImageAccommodationDto imageAccommodationEntityToImageAccommodationDto(ImageAccommodation imageAccommodation);
 
 
@@ -23,6 +23,7 @@ public interface ImageAccommodationMapper {
      * IGNORA la relación con el alojamiento porque se maneja por separado.
      */
     @Named("imageAccommodationDtoToImageAccommodationEntity")
+    @Mapping(source = "isPrincipal", target = "principal")
     @Mapping(target = "accommodationEntity", ignore = true)
     ImageAccommodation imageAccommodationDtoToImageAccommodationEntity(ImageAccommodationDto imageAccommodationDto);
 
@@ -43,8 +44,9 @@ public interface ImageAccommodationMapper {
      * @param imageAccommodationDto DTO con los datos a actualizar
      * @param imageAccommodation entidad existente que será actualizada
      */
-    @Mapping(target = "id", ignore = true)                        // ID nunca cambia
-    @Mapping(target = "accommodationEntity", ignore = true)       // Relación no se actualiza aquí
+    @Mapping(source = "isPrincipal", target = "principal")  // ✅ AGREGADO
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "accommodationEntity", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateEntityFromDto(ImageAccommodationDto imageAccommodationDto, @MappingTarget ImageAccommodation imageAccommodation);
 
@@ -67,6 +69,4 @@ public interface ImageAccommodationMapper {
      */
     @IterableMapping(qualifiedByName = "imageAccommodationDtoToImageAccommodationEntity")
     List<ImageAccommodation> getImageAccommodationsEntity(List<ImageAccommodationDto> imageAccommodationDtoList);
-
-
 }
