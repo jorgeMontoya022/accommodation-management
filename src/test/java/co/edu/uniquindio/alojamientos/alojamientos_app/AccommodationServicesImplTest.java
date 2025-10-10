@@ -23,7 +23,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(org.mockito.junit.jupiter.MockitoExtension.class)
-class AccommodationServiceImplTest {
+class AccommodationServicesImplTest {
 
     @Mock
     private AccommodationDao accommodationDao;
