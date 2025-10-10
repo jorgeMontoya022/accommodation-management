@@ -18,84 +18,36 @@ import java.util.Optional;
  */
 public interface BookingRepository extends JpaRepository<BookingEntity, Long> {
 
-    // DISPONIBILIDAD / SOLAPAMIENTOS
-    // Regla de solape (inclusive en bordes):
-    //   (existing.dateCheckin <= end) AND (existing.dateCheckout >= start)
+    /**
+     * Buscar reservas que se solapan con un rango de fechas para un alojamiento específico.
+     * Se consideran únicamente las reservas con estado activo (por ejemplo, PAGADO o CONFIRMADO).
+     *
+     * @param accommodationId ID del alojamiento asociado
+     * @param startDate fecha inicial del rango a verificar
+     * @param endDate fecha final del rango a verificar
+     * @param statuses lista de estados válidos a considerar (ej. PAID, CONFIRMED)
+     * @return lista de reservas que se solapan con el rango indicado
+     */
+    @Query("SELECT b FROM BookingEntity b WHERE b.accommodationAssociated.id = :accommodationId " +
+            "AND b.statusReservation IN :statuses " +
+            "AND ((b.dateCheckin <= :endDate AND b.dateCheckout >= :startDate))")
+    List<BookingEntity> findOverlappingBookings(
+            @Param("accommodationId") Long accommodationId,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate,
+            @Param("statuses") List<StatusReservation> statuses);
 
-    boolean existsByAccommodationAssociated_IdAndStatusReservationInAndDateCheckinLessThanEqualAndDateCheckoutGreaterThanEqual(
-            Long accommodationId,
-            Collection<StatusReservation> statuses,
-            LocalDateTime end,
-            LocalDateTime start
-    );
+    /**
+     * Contar el número total de reservas asociadas a un alojamiento.
+     *
+     * @param accommodationId ID del alojamiento
+     * @return cantidad total de reservas realizadas sobre ese alojamiento
+     */
+    @Query("SELECT COUNT(b) FROM BookingEntity b WHERE b.accommodationAssociated.id = :accommodationId")
+    Long countBookingsByAccommodationId(@Param("accommodationId") Long accommodationId);
 
-    List<BookingEntity> findByAccommodationAssociated_IdAndStatusReservationInAndDateCheckinLessThanEqualAndDateCheckoutGreaterThanEqual(
-            Long accommodationId,
-            Collection<StatusReservation> statuses,
-            LocalDateTime end,
-            LocalDateTime start
-    );
+    List<BookingEntity> findByGuestEntityIdOrderByDateCreationDesc(Long guestId);
 
-    // LISTADOS POR HUÉSPED
 
-    Page<BookingEntity> findByGuestEntity_IdOrderByDateCheckinDesc(Long guestId, Pageable pageable);
-
-    Page<BookingEntity> findByGuestEntity_IdAndStatusReservationInOrderByDateCheckinDesc(
-            Long guestId,
-            Collection<StatusReservation> statuses,
-            Pageable pageable
-    );
-
-    // LISTADOS POR ALOJAMIENTO
-
-    Page<BookingEntity> findByAccommodationAssociated_IdOrderByDateCheckinDesc(
-            Long accommodationId, Pageable pageable);
-
-    Page<BookingEntity> findByAccommodationAssociated_IdAndStatusReservationInOrderByDateCheckinDesc(
-            Long accommodationId, Collection<StatusReservation> statuses, Pageable pageable);
-
-    Page<BookingEntity> findByAccommodationAssociated_IdAndDateCheckinGreaterThanEqualAndDateCheckoutLessThanEqualOrderByDateCheckinDesc(
-            Long accommodationId, LocalDateTime start, LocalDateTime end, Pageable pageable);
-
-    // LISTADOS / MÉTRICAS POR HOST
-
-    @Query("select b from BookingEntity b " +
-            "where b.accommodationAssociated.hostEntity.id = :hostId " +
-            "order by b.dateCheckin desc")
-    Page<BookingEntity> findByHostIdOrderByDateCheckinDesc(@Param("hostId") Long hostId, Pageable pageable);
-
-    @Query("select b from BookingEntity b " +
-            "where b.accommodationAssociated.hostEntity.id = :hostId " +
-            "and b.statusReservation in :statuses " +
-            "order by b.dateCheckin desc")
-    Page<BookingEntity> findByHostIdAndStatusesOrderByDateCheckinDesc(@Param("hostId") Long hostId,
-                                                                      @Param("statuses") Collection<StatusReservation> statuses,
-                                                                      Pageable pageable);
-
-    long countByAccommodationAssociated_HostEntity_IdAndStatusReservation(Long hostId, StatusReservation status);
-
-    long countByAccommodationAssociated_IdAndStatusReservation(Long accommodationId, StatusReservation status);
-
-    // CONSULTAS AUXILIARES
-
-    Optional<BookingEntity> findByIdAndGuestEntity_Id(Long bookingId, Long guestId);
-
-    List<BookingEntity> findByAccommodationAssociated_IdAndDateCheckinGreaterThanEqualOrderByDateCheckinAsc(
-            Long accommodationId, LocalDateTime from);
-
-    List<BookingEntity> findByDateCheckinGreaterThanEqualAndDateCheckoutLessThanEqualOrderByDateCheckinDesc(
-            LocalDateTime start, LocalDateTime end);
-
-    /** IDs de alojamientos ocupados en un rango (útil para excluir en búsquedas de disponibilidad). */
-    @Query("select distinct b.accommodationAssociated.id " +
-            "from BookingEntity b " +
-            "where b.statusReservation in :statuses " +
-            "and b.dateCheckin <= :end " +
-            "and b.dateCheckout >= :start")
-    List<Long> findOccupiedAccommodationIdsBetween(@Param("start") LocalDateTime start,
-                                                   @Param("end") LocalDateTime end,
-                                                   @Param("statuses") Collection<StatusReservation> statuses);
-
-    /** ¿Existen reservas futuras (>= now) para un alojamiento? Útil para impedir eliminar el alojamiento. */
-    boolean existsByAccommodationAssociated_IdAndDateCheckinGreaterThanEqual(Long accommodationId, LocalDateTime now);
+    List<BookingEntity> findByAccommodationAssociatedIdOrderByDateCreationDesc(Long accommodationId);
 }
