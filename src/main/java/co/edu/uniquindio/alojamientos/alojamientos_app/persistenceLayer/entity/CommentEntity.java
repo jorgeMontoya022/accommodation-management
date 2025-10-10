@@ -50,4 +50,10 @@ public class CommentEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "booking_id", nullable = false)
     private BookingEntity bookingEntity;
+
+    @PrePersist
+    public void onCreate() {
+        this.dateCreation = LocalDateTime.now();
+
+    }
 }
