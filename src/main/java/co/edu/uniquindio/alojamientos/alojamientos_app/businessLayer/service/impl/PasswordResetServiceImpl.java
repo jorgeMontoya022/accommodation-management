@@ -12,7 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 @Slf4j
-public class PasswordResetServiceImpl implements PasswordResetService {
+public class
+PasswordResetServiceImpl implements PasswordResetService {
 
     @Override
     public void requestPasswordReset(RequestPasswordResetDto request, String userType) {
