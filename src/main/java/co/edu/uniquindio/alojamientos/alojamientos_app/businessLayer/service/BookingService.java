@@ -27,7 +27,7 @@ public interface BookingService {
      * @param authenticatedGuestId ID del huésped autenticado
      * @return ResponseBookingDto con los datos actualizados
      */
-    ResponseBookingDto updateBooking(Long id, UpdateBookingDto updateBookingDto, Long authenticatedGuestId)
+    ResponseBookingDto updateBooking(Long id, UpdateBookingDto updateBookingDto, Long authenticatedGuestId);
 
     /**
      * Obtiene una reserva por su ID
