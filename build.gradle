@@ -2,6 +2,8 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.5.5'
     id 'io.spring.dependency-management' version '1.1.7'
+    id 'jacoco'
+    id 'io.qameta.allure' version '2.12.0'
 }
 
 group = 'co.edu.uniquindio.alojamientos'
@@ -25,36 +27,96 @@ repositories {
 }
 
 dependencies {
+    //Dependencias Principales de Spring
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    compileOnly 'org.projectlombok:lombok'
-    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
-    annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-
-
-    implementation 'org.simplejavamail:simple-java-mail:8.12.6'
-    implementation 'org.simplejavamail:batch-module:8.12.6'
-
-    //para el servicio donde se alojarán las fotos
-    implementation 'com.cloudinary:cloudinary-http5:2.3.2'
-
-    // seguridad y JWT
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
+
+    // JWT
     implementation 'io.jsonwebtoken:jjwt-api:0.13.0'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.13.0'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.13.0'
 
+    // Base de datos
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 
+    // Cloudinary para el servicio donde se alojarán las fotos
+    implementation 'com.cloudinary:cloudinary-http5:2.3.2'
+
+    //Envio de correos
+    implementation 'org.simplejavamail:simple-java-mail:8.12.6'
+    implementation 'org.simplejavamail:batch-module:8.12.6'
+
+    // Estructura de mapeo
     implementation 'org.mapstruct:mapstruct:1.5.5.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
 
-    compileOnly 'org.projectlombok:lombok:1.18.30'
+    //Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
 
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
+    //Dependencias para pruebas
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'org.mockito:mockito-core'
+    testImplementation 'org.mockito:mockito-junit-jupiter'
+
+    // Reportes con Allure
+    testImplementation 'io.qameta.allure:allure-junit5:2.25.0'
+
+    //Launcher necesario para JUnit
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 test {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+jacoco {
+    toolVersion = "0.8.10"
+}
+
+tasks.test {
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        csv.required = false
+        html.required = true
+    }
+    def excludes = ['/config/', '/Application', '/dto/', '/generated/']
+    classDirectories.setFrom(
+            files(sourceSets.main.output).collect { fileTree(dir: it, exclude: excludes) }
+    )
+
+    additionalSourceDirs.setFrom(files(sourceSets.main.allSource.srcDirs))
+    sourceDirectories.setFrom(files(sourceSets.main.allSource.srcDirs))
+    executionData.setFrom(fileTree(dir: project.buildDir, include: '/jacoco/*.exec'))
+}
+
+jacocoTestCoverageVerification {
+    dependsOn test
+    violationRules {
+        rule {
+            enabled = true
+            element = 'CLASS'
+            limit {
+                counter = 'LINE'
+                value = 'COVERED_RATIO'
+                minimum = 0.80
+            }
+        }
+    }
+}
+
+check.dependsOn jacocoTestCoverageVerification
+
+allure {
+    version = '2.24.0'
 }

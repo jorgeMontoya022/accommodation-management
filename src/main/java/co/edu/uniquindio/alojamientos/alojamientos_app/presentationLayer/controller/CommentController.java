@@ -5,5 +5,5 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-public class GuestController {
+public class CommentController {
 }
