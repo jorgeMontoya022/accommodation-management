@@ -27,60 +27,64 @@ repositories {
 }
 
 dependencies {
-    //Dependencias Principales de Spring
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
 
-    // JWT
+    // Lombok
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    implementation 'org.simplejavamail:simple-java-mail:8.12.6'
+    implementation 'org.simplejavamail:batch-module:8.12.6'
+
+    // Cloudinary
+    implementation 'com.cloudinary:cloudinary-http5:2.3.2'
+
+    // Seguridad y JWT
+    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'io.jsonwebtoken:jjwt-api:0.13.0'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.13.0'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.13.0'
 
-    // Base de datos
-    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
-
-    // Cloudinary para el servicio donde se alojarán las fotos
-    implementation 'com.cloudinary:cloudinary-http5:2.3.2'
-
-    //Envio de correos
-    implementation 'org.simplejavamail:simple-java-mail:8.12.6'
-    implementation 'org.simplejavamail:batch-module:8.12.6'
-
-    // Estructura de mapeo
+    // MapStruct
     implementation 'org.mapstruct:mapstruct:1.5.5.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
 
-    //Lombok
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
+    // *Binding Lombok–MapStruct (clave)*
+    implementation 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+    annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
 
-    //Dependencias para pruebas
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    testImplementation 'org.mockito:mockito-core'
-    testImplementation 'org.mockito:mockito-junit-jupiter'
+    // OpenAPI UI
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
 
-    // Reportes con Allure
-    testImplementation 'io.qameta.allure:allure-junit5:2.25.0'
-
-    //Launcher necesario para JUnit
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    // --- (Opcional pero recomendado si usas mappers en tests) ---
+    testAnnotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
+    testAnnotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
 }
 
+// ========== CONFIGURACIÓN DEL COMPILADOR JAVA ==========
+tasks.withType(JavaCompile) {
+    options.compilerArgs += [
+            '-Amapstruct.defaultComponentModel=spring',
+            '-Amapstruct.unmappedTargetPolicy=WARN'
+    ]
+}
+
+// ========== CONFIGURACIÓN DE TESTS ==========
 test {
     useJUnitPlatform()
     finalizedBy jacocoTestReport
 }
 
+// ========== JACOCO (COBERTURA DE CÓDIGO) ==========
 jacoco {
     toolVersion = "0.8.10"
-}
-
-tasks.test {
-    useJUnitPlatform()
-    finalizedBy jacocoTestReport
 }
 
 jacocoTestReport {
@@ -90,9 +94,19 @@ jacocoTestReport {
         csv.required = false
         html.required = true
     }
-    def excludes = ['/config/', '/Application', '/dto/', '/generated/']
+
+    def excludes = [
+            '**/config/**',
+            '**/Application.class',
+            '**/dto/**',
+            '**/generated/**',
+            '**/mapper/**Impl.class'  // Excluir implementaciones generadas de MapStruct
+    ]
+
     classDirectories.setFrom(
-            files(sourceSets.main.output).collect { fileTree(dir: it, exclude: excludes) }
+            files(sourceSets.main.output).collect {
+                fileTree(dir: it, exclude: excludes)
+            }
     )
 
     additionalSourceDirs.setFrom(files(sourceSets.main.allSource.srcDirs))
@@ -108,7 +122,7 @@ jacocoTestCoverageVerification {
             element = 'CLASS'
             limit {
                 counter = 'LINE'
-                value = 'COVERED_RATIO'
+                value = 'COVEREDRATIO'
                 minimum = 0.80
             }
         }
@@ -117,6 +131,7 @@ jacocoTestCoverageVerification {
 
 check.dependsOn jacocoTestCoverageVerification
 
+// ========== ALLURE ==========
 allure {
     version = '2.24.0'
 }
