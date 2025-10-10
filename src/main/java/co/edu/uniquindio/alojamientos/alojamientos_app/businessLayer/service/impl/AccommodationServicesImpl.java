@@ -107,6 +107,21 @@ public class AccommodationServicesImpl implements AccommodationService {
         }
         Long bookingCount = accommodationDao.countBookingsByAccommodationId(id);
 
+        /* Validar reservas FUTURAS
+        LocalDateTime now = LocalDateTime.now();
+        boolean hasFutureBookings =
+                bookingRepository.existsByAccommodationAssociated_IdAndDateCheckinGreaterThanEqual(accommodation.getId(), now);
+
+        if (hasFutureBookings) {
+            throw new IllegalStateException("No se puede eliminar el alojamiento porque tiene reservas futuras");
+        }*/
+
+        // Soft delete
+        accommodation.setDeleted(true);
+        accommodation.setDateUpdate(LocalDateTime.now());
+        accommodationDao.save(accommodation);
+
+        log.info("Alojamiento eliminado (soft delete) con ID: {}", id);
         if(bookingCount > 0) {
             throw new IllegalArgumentException(String.format("No se puede eliminar el alojamiento porque tiene %d reserva(s) asociada(s)", bookingCount));
         }

@@ -34,18 +34,18 @@ import static org.mockito.Mockito.*;
  */
 @ExtendWith(MockitoExtension.class)
 @DisplayName("GuestService - Unit Tests")
-class GuestServiceImplTest {
+public class GuestServiceImplTest {
 
-    // ===== Dependencias mockeadas =====
+    //Dependencias mockeadas
     @Mock private GuestDao guestDao;
     @Mock private GuestMapper guestMapper;
     @Mock private PasswordEncoder passwordEncoder;
 
-    // ===== SUT =====
+    // SUT
     @InjectMocks
     private GuestServiceImpl guestService;
 
-    // ===== Datos de prueba =====
+    // Datos de prueba
     private RequestGuestDto requestGuest;
     private ResponseGuestDto responseGuest;
     private GuestEntity guestEntity;
@@ -80,7 +80,7 @@ class GuestServiceImplTest {
         );
     }
 
-    // ==================== CREATE ====================
+    // CREATE
 
     @Test
     @DisplayName("CREATE - Huésped válido retorna DTO con ID y encripta contraseña")
@@ -113,7 +113,7 @@ class GuestServiceImplTest {
         verify(guestDao, never()).saveEntity(any());
     }
 
-    // ==================== READ ====================
+    // READ
 
     @Test
     @DisplayName("READ - getGuestById retorna DTO y setea foto por defecto si es null")
@@ -162,7 +162,7 @@ class GuestServiceImplTest {
                 .hasMessageContaining("Huésped no encontrado");
     }
 
-    // ==================== UPDATE ====================
+    //  UPDATE
 
     @Test
     @DisplayName("UPDATE - Actualiza campos permitidos y retorna DTO")
@@ -207,7 +207,7 @@ class GuestServiceImplTest {
                 .hasMessageContaining("Huésped no encontrado");
     }
 
-    // ==================== DELETE ====================
+    // DELETE
 
     @Test
     @DisplayName("DELETE - Con reservas activas lanza IllegalStateException")
@@ -234,7 +234,7 @@ class GuestServiceImplTest {
         verify(guestDao).updateEntity(guestEntity);
     }
 
-    // ==================== QUERIES SIMPLES ====================
+    // QUERIES SIMPLES
 
     @Test
     @DisplayName("COUNT - getGuestBookingCount delega en DAO tras validar existencia")
@@ -265,7 +265,7 @@ class GuestServiceImplTest {
         verify(guestDao).isActiveById(1L);
     }
 
-    // ==================== CHANGE PASSWORD ====================
+    // CHANGE PASSWORD
 
     @Test
     @DisplayName("CHANGE PASSWORD - Confirmación distinta lanza IllegalArgumentException")

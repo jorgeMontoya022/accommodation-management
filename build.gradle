@@ -62,13 +62,13 @@ dependencies {
     // OpenAPI UI
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
 
-    // --- (Opcional pero recomendado si usas mappers en tests) ---
+    // mappers en tests
     testAnnotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
     testAnnotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
 }
 
-// ========== CONFIGURACIÓN DEL COMPILADOR JAVA ==========
+//CONFIGURACIÓN DEL COMPILADOR JAVA
 tasks.withType(JavaCompile) {
     options.compilerArgs += [
             '-Amapstruct.defaultComponentModel=spring',
@@ -76,13 +76,13 @@ tasks.withType(JavaCompile) {
     ]
 }
 
-// ========== CONFIGURACIÓN DE TESTS ==========
+//CONFIGURACIÓN DE TESTS
 test {
     useJUnitPlatform()
     finalizedBy jacocoTestReport
 }
 
-// ========== JACOCO (COBERTURA DE CÓDIGO) ==========
+//  JACOCO (COBERTURA DE CÓDIGO)
 jacoco {
     toolVersion = "0.8.10"
 }
@@ -131,7 +131,7 @@ jacocoTestCoverageVerification {
 
 check.dependsOn jacocoTestCoverageVerification
 
-// ========== ALLURE ==========
+// ALLURE
 allure {
     version = '2.24.0'
 }
