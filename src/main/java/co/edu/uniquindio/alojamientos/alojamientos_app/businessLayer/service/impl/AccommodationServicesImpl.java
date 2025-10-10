@@ -113,14 +113,14 @@ public class AccommodationServicesImpl implements AccommodationService {
             return;
         }
 
-        // Validar reservas FUTURAS
+        /* Validar reservas FUTURAS
         LocalDateTime now = LocalDateTime.now();
         boolean hasFutureBookings =
                 bookingRepository.existsByAccommodationAssociated_IdAndDateCheckinGreaterThanEqual(accommodation.getId(), now);
 
         if (hasFutureBookings) {
             throw new IllegalStateException("No se puede eliminar el alojamiento porque tiene reservas futuras");
-        }
+        }*/
 
         // Soft delete
         accommodation.setDeleted(true);
