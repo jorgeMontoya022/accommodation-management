@@ -4,15 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="66831e74-db4e-4efd-9b53-ddd260788d6f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/test/java/co/edu/uniquindio/alojamientos/alojamientos_app/GuestServiceImplTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/businessLayer/service/GuestService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/businessLayer/service/GuestService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/businessLayer/service/impl/PasswordResetServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/businessLayer/service/impl/PasswordResetServiceImpl.java" afterDir="false" />
-    </list>
+    <list default="true" id="66831e74-db4e-4efd-9b53-ddd260788d6f" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -174,7 +166,7 @@
       <workItem from="1759806470154" duration="3840000" />
       <workItem from="1759850185840" duration="21629000" />
       <workItem from="1759944713914" duration="12411000" />
-      <workItem from="1760062275195" duration="6270000" />
+      <workItem from="1760062275195" duration="6681000" />
     </task>
     <servers />
   </component>
