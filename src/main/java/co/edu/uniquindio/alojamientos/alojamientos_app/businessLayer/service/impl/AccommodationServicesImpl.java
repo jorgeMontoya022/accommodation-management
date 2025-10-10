@@ -102,10 +102,11 @@ public class AccommodationServicesImpl implements AccommodationService {
 
     @Override
     public void deleteAccommodation(Long id) {
-        if(!accommodationDao.findById(id).isPresent()) {
-            throw new RuntimeException("No se encontró el alojamiento");
-        }
+        AccommodationEntity accommodation = accommodationDao.findById(id)
+                .orElseThrow(() -> new RuntimeException("Alojamiento no encontrado"));
         Long bookingCount = accommodationDao.countBookingsByAccommodationId(id);
+
+        
 
         /* Validar reservas FUTURAS
         LocalDateTime now = LocalDateTime.now();
@@ -116,18 +117,17 @@ public class AccommodationServicesImpl implements AccommodationService {
             throw new IllegalStateException("No se puede eliminar el alojamiento porque tiene reservas futuras");
         }*/
 
-        // Soft delete
-        accommodation.setDeleted(true);
-        accommodation.setDateUpdate(LocalDateTime.now());
-        accommodationDao.save(accommodation);
 
-        log.info("Alojamiento eliminado (soft delete) con ID: {}", id);
         if(bookingCount > 0) {
             throw new IllegalArgumentException(String.format("No se puede eliminar el alojamiento porque tiene %d reserva(s) asociada(s)", bookingCount));
         }
         if(!accommodationDao.deleteById(id)) {
             throw new RuntimeException("Error al eliminar el alojamiento con ID: " + id);
         }
+        accommodation.setStatusAccommodation(StatusAccommodation.DELETED);
+        accommodation.setDateUpdate(LocalDateTime.now());
+
+        accommodationDao.updateEntity(accommodation);
     }
 
 
