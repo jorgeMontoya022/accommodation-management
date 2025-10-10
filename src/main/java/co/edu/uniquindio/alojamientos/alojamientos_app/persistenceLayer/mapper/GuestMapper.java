@@ -8,20 +8,12 @@ import org.mapstruct.*;
 
 import java.util.List;
 
-
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.WARN)
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface GuestMapper {
 
-    /**
-     * Convierte una entidad GuestEntity a su DTO correspondiente.
-     */
     @Named("guestEntityToGuestDto")
     ResponseGuestDto guestEntityToGuestDto(GuestEntity guestEntity);
 
-    /**
-     * Convierte un DTO GuestDto a una nueva entidad GuestEntity.
-     * IGNORA las fechas de auditoría y relaciones porque se manejan por separado.
-     */
     @Named("guestDtoToGuestEntity")
     @Mapping(target = "dateRegister", ignore = true)
     @Mapping(target = "dateUpdate", ignore = true)
@@ -29,52 +21,20 @@ public interface GuestMapper {
     @Mapping(target = "commentsWritten", ignore = true)
     GuestEntity guestDtoToGuestEntity(RequestGuestDto guestDto);
 
-
-    /**
-     * Actualiza una GuestEntity existente con datos de GuestDto.
-     *
-     * ¿POR QUÉ @MappingTarget?
-     * - Actualiza la entidad existente en lugar de crear una nueva
-     * - Preserva campos que no deben modificarse (id, email, fechas, relaciones)
-     * - Permite actualización parcial (solo campos no-null del DTO)
-     *
-     * ESTRATEGIA NULL_VALUE_PROPERTY_MAPPING_STRATEGY.IGNORE:
-     * - Si un campo en GuestDto es null, NO actualiza ese campo en la entity
-     * - Permite actualización parcial tipo PATCH
-     * - Ejemplo: Si solo envías {name: "Nuevo Nombre"}, solo se actualiza el nombre
-     *
-     * @param guestDto DTO con los datos a actualizar
-     * @param guestEntity entidad existente que será actualizada
-     */
-    @Mapping(target = "id", ignore = true)                    // ID nunca cambia
-    @Mapping(target = "email", ignore = true)                 // Email no se puede modificar
-    @Mapping(target = "dateRegister", ignore = true)          // Fecha de registro es inmutable
-    @Mapping(target = "dateUpdate", ignore = true)            // Se maneja en el Service
-    @Mapping(target = "active", ignore = true)                // Se maneja en el Service (soft delete)
-    @Mapping(target = "bookingEntityList", ignore = true)     // Relaciones no se actualizan aquí
-    @Mapping(target = "commentsWritten", ignore = true)       // Relaciones no se actualizan aquí
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "email", ignore = true)
+    @Mapping(target = "password", ignore = true)
+    @Mapping(target = "dateRegister", ignore = true)
+    @Mapping(target = "dateUpdate", ignore = true)
+    @Mapping(target = "active", ignore = true)
+    @Mapping(target = "bookingEntityList", ignore = true)
+    @Mapping(target = "commentsWritten", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateEntityFromDto(UpdateGuestDto guestDto, @MappingTarget GuestEntity guestEntity);
 
-
-    /**
-     * Convierte una lista de entidades GuestEntity a una lista de DTOs.
-     *
-     * @param guestEntityList lista de entidades a convertir
-     * @return lista de DTOs
-     */
     @IterableMapping(qualifiedByName = "guestEntityToGuestDto")
     List<ResponseGuestDto> getGuestsDto(List<GuestEntity> guestEntityList);
 
-
-    /**
-     * Convierte una lista de DTOs GuestDto a una lista de entidades.
-     *
-     * @param guestDtoList lista de DTOs a convertir
-     * @return lista de entidades
-     */
     @IterableMapping(qualifiedByName = "guestDtoToGuestEntity")
     List<GuestEntity> getGuestsEntity(List<RequestGuestDto> guestDtoList);
-
-
 }
