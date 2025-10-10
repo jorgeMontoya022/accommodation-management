@@ -12,25 +12,31 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmailServiceImpl implements EmailService {
 
+    private final Mailer mailer;
+
+    // Constructor para inyección (mock o real)
+    public EmailServiceImpl(Mailer mailer) {
+        this.mailer = mailer;
+    }
 
     @Override
     public void sendMail(SendEmailDto sendEmailDto) throws Exception {
 
         Email email = EmailBuilder.startingBlank()
-                .from("SMTP_USERNAME")
+                .from("test@domain.com") // correo válido de prueba
+                //.from("SMTP_USERNAME")
                 .to(sendEmailDto.getRecipient())
                 .withSubject(sendEmailDto.getSubject())
                 .withPlainText(sendEmailDto.getBody())
                 .buildEmail();
 
-        try (Mailer mailer = MailerBuilder
+        /*try (Mailer mailer = MailerBuilder
                 .withSMTPServer("smtp.gmail.com", 587, "SMTP_USERNAME", "SMTP_PASSWORD")
                 .withTransportStrategy(TransportStrategy.SMTP_TLS)
                 .withDebugLogging(true)
-                .buildMailer()) {
+                .buildMailer()) {*/
 
             mailer.sendMail(email);
         }
 
     }
-}
