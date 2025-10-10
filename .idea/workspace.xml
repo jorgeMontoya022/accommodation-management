@@ -6,11 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="66831e74-db4e-4efd-9b53-ddd260788d6f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/businessLayer/service/BookingService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/businessLayer/service/BookingService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/businessLayer/service/impl/BookingServicesImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/businessLayer/service/impl/BookingServicesImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/persistenceLayer/dao/BookingDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/persistenceLayer/dao/BookingDao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/persistenceLayer/entity/StatusReservation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/persistenceLayer/entity/StatusReservation.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/persistenceLayer/repository/BookingRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/persistenceLayer/repository/BookingRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/businessLayer/service/impl/CommentServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/businessLayer/service/impl/CommentServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/persistenceLayer/dao/CommentDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/persistenceLayer/dao/CommentDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/persistenceLayer/mapper/CommentMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/co/edu/uniquindio/alojamientos/alojamientos_app/persistenceLayer/mapper/CommentMapper.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

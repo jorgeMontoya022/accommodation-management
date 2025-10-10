@@ -1,6 +1,7 @@
 package co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.mapper;
 
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.CommentDto;
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.ResponseCommentDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.entity.CommentEntity;
 import org.mapstruct.*;
 
@@ -23,7 +24,7 @@ public interface CommentMapper {
     @Mapping(source = "accommodationEntity.id", target = "idAccommodation")
     @Mapping(source = "authorGuest.id", target = "idGuest")
     @Mapping(source = "bookingEntity.id", target = "idBooking")
-    CommentDto reviewEntityToReviewDto(CommentEntity commentEntity);
+    ResponseCommentDto reviewEntityToReviewDto(CommentEntity commentEntity);
 
 
     /**
@@ -77,7 +78,7 @@ public interface CommentMapper {
      * @return lista de DTOs
      */
     @IterableMapping(qualifiedByName = "reviewEntityToReviewDto")
-    List<CommentDto> getReviewsDto(List<CommentEntity> commentEntityList);
+    List<ResponseCommentDto> getReviewsDto(List<CommentEntity> commentEntityList);
 
 
     /**
