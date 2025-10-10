@@ -17,7 +17,7 @@ public interface GuestRepository extends JpaRepository<GuestEntity, Long> {
      */
     Optional<GuestEntity> findByEmail(String email);
 
-    boolean exitsByEmail(String email);
+    boolean existsByEmail(String email);
 
     /**
      * Busca huespedes que tienen al menos una reserva
