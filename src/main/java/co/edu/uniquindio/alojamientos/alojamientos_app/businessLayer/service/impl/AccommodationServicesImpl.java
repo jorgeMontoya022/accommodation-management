@@ -106,7 +106,7 @@ public class AccommodationServicesImpl implements AccommodationService {
                 .orElseThrow(() -> new RuntimeException("Alojamiento no encontrado"));
         Long bookingCount = accommodationDao.countBookingsByAccommodationId(id);
 
-        
+
 
         /* Validar reservas FUTURAS
         LocalDateTime now = LocalDateTime.now();
