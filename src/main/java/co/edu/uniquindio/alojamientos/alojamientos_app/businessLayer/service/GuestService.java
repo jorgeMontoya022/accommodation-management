@@ -110,4 +110,8 @@ public interface GuestService {
 
     void changePassword(Long id, ChangePasswordDto changePasswordDto);
 
+
+
+
+
 }

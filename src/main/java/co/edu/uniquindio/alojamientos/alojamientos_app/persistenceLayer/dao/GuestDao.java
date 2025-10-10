@@ -68,7 +68,7 @@ public class GuestDao {
      * Verificar si existe email
      */
     public boolean existsByEmail(String email) {
-        return guestRepository.exitsByEmail(email);
+        return guestRepository.existsByEmail(email);
     }
 
     /**

@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,12 +18,19 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@SQLDelete(sql = "UPDATE accommodations SET deleted = true, date_update_accommodation = NOW() WHERE id = ?")
+@Where(clause = "deleted = false") // <- filtra registros marcados como eliminados
 public class AccommodationEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "qualification_accommodation",nullable = false, length = 500)
+    // Bloqueo optimista para evitar escrituras perdidas
+    @Version
+    private Long version;
+
+    @Column(name = "qualification_accommodation", nullable = false, length = 500)
     private String qualification;
 
     @Column(name = "description_accommodation", nullable = false, length = 1000)
@@ -30,9 +39,11 @@ public class AccommodationEntity {
     @Column(name = "city_accommodation", nullable = false, length = 100)
     private String city;
 
+    // Nota: mantengo String para no romper el esquema actual
     @Column(name = "latitude_accommodation", nullable = false, length = 100)
     private String latitude;
 
+    // OJO: el nombre de columna 'length_accommodation' parece un typo de 'longitude'
     @Column(name = "length_accommodation", nullable = false, length = 100)
     private String longitude;
 
@@ -42,7 +53,7 @@ public class AccommodationEntity {
     @Column(name = "maximux_capacity_accommodation", nullable = false)
     private int maximumCapacity;
 
-    @Column(name = "date_creation_accommodation", nullable = false)
+    @Column(name = "date_creation_accommodation", nullable = false, updatable = false)
     private LocalDateTime dateCreation;
 
     @Column(name = "date_update_accommodation")
@@ -56,30 +67,36 @@ public class AccommodationEntity {
     @Column(name = "services_accommodation", nullable = false, length = 20)
     private TypeServicesEnum typeServicesEnum;
 
-    @OneToMany(mappedBy = "accommodationEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    // Relación correcta con BookingEntity: mappedBy debe apuntar al campo ManyToOne en BookingEntity
+    @OneToMany(mappedBy = "accommodationAssociated", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<BookingEntity> bookingEntityList = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "host_id", nullable = false)
     private HostEntity hostEntity;
 
-    // Relación One-to-Many: Un alojamiento tiene muchas imágenes (máximo 6)
+    // Galería (máximo 6) — regla de negocio validada en el servicio correspondiente
     @OneToMany(mappedBy = "accommodationEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<ImageAccommodation> images = new ArrayList<>();
 
-    // Relación One-to-Many: Un alojamiento tiene muchos comentarios
     @OneToMany(mappedBy = "accommodationEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CommentEntity> comments = new ArrayList<>();
 
+    // Soft delete
+    @Column(name = "deleted", nullable = false)
+    private boolean deleted = false;
+
     @PrePersist
     public void onCreate() {
+        // Fecha de creación y estado inicial
         this.dateCreation = LocalDateTime.now();
-        this.setStatusAccommodation(StatusAccommodation.ACTIVE);
+        this.statusAccommodation = StatusAccommodation.ACTIVE;
+        this.deleted = false;
     }
 
     @PreUpdate
     public void onUpdate() {
+        // Fecha de actualización
         this.dateUpdate = LocalDateTime.now();
     }
-
 }
