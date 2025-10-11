@@ -13,7 +13,6 @@ import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service.Ema
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -61,9 +60,8 @@ class PasswordResetServiceImplTest {
         guestEntity.setEmail(guestEmail);
     }
 
-    // =======================
+
     // Tests para requestPasswordReset
-    // =======================
     @Test
     void requestPasswordReset_HostUser_Success() throws Exception {
         RequestPasswordResetDto request = new RequestPasswordResetDto(hostEmail);
@@ -104,9 +102,8 @@ class PasswordResetServiceImplTest {
         assertEquals("Anfitrión no encontrado con este email", exception.getMessage());
     }
 
-    // =======================
+
     // Tests para verifyAndResetPassword
-    // =======================
     @Test
     void verifyAndResetPassword_PasswordsDoNotMatch_ThrowsException() {
         VerifyPasswordResetDto request = new VerifyPasswordResetDto(
@@ -151,7 +148,7 @@ class PasswordResetServiceImplTest {
 
         when(tokenRepository.findByTokenAndEmailAndUsedFalse("123456", hostEmail))
                 .thenReturn(Optional.of(token));
-        
+
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
                 passwordResetService.verifyAndResetPassword(request, "HOST")
         );

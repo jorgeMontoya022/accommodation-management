@@ -65,9 +65,9 @@ class HostServiceImplTest {
         hostEntity.setActive(true);
     }
 
-    // -------------------------------------------------------------
+
     // CREATE HOST
-    // -------------------------------------------------------------
+
     @Test
     @DisplayName("Debería crear un nuevo anfitrión exitosamente")
     void createHost_Success() {
