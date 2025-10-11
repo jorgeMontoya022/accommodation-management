@@ -6,9 +6,11 @@ import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.Respons
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.UpdateHostDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.ResponseAccommodationDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.ResponseBookingDto;
-import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service.HostService;
-import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service.AccommodationService;
-import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service.BookingService;
+
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service.impl.HostServicesImpl;
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service.impl.AccommodationServicesImpl;
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service.impl.BookingServicesImpl;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -39,12 +41,12 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class HostController {
 
-    private final HostService hostService;
-    private final AccommodationService accommodationService;
-    private final BookingService bookingService;
+    //  Implementaciones concretas
+    private final HostServicesImpl hostService;
+    private final AccommodationServicesImpl accommodationService;
+    private final BookingServicesImpl bookingService;
 
     // PUBLIC — Registro
-
     @Operation(summary = "Registrar anfitrión")
     @PostMapping
     public ResponseEntity<ResponseHostDto> createHost(@Valid @RequestBody RequestHostDto request) {
@@ -55,7 +57,6 @@ public class HostController {
     }
 
     // PUBLIC — Verificación de email
-
     @Operation(summary = "Verificar disponibilidad de email")
     @GetMapping("/email-availability")
     public ResponseEntity<Map<String, Boolean>> checkEmailAvailability(@RequestParam String email) {
@@ -64,7 +65,6 @@ public class HostController {
     }
 
     // SECURED — Perfil del host autenticado
-
     @Operation(summary = "Obtener mi perfil", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/me")
     public ResponseEntity<ResponseHostDto> getMyProfile(Authentication authentication) {
@@ -93,7 +93,6 @@ public class HostController {
     }
 
     // SECURED — Contraseña
-
     @Operation(
             summary = "Cambiar mi contraseña",
             security = @SecurityRequirement(name = "bearerAuth"),
@@ -114,7 +113,6 @@ public class HostController {
     }
 
     // SECURED — Métricas y estado
-
     @Operation(summary = "Mis métricas: número de alojamientos", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/me/stats/accommodations-count")
     public ResponseEntity<Map<String, Long>> getMyAccommodationsCount(Authentication authentication) {
@@ -132,7 +130,6 @@ public class HostController {
     }
 
     // SECURED — Mis alojamientos
-
     @Operation(summary = "Listar mis alojamientos (paginado)", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/me/accommodations")
     public ResponseEntity<Page<ResponseAccommodationDto>> listMyAccommodations(
@@ -147,10 +144,8 @@ public class HostController {
     }
 
     // SECURED — Reservas de un alojamiento mío
-
     /**
      * Lista las reservas de un alojamiento del host autenticado.
-     * La validación de propiedad del alojamiento debe hacerse en el service.
      */
     @Operation(summary = "Listar reservas de un alojamiento mío", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/me/accommodations/{accommodationId}/bookings")
@@ -159,17 +154,13 @@ public class HostController {
             @PathVariable Long accommodationId
     ) {
         Long hostId = extractUserIdFromAuthentication(authentication);
-        // el service debe validar que accommodationId pertenece a hostId
+        // El service debe validar que accommodationId pertenece a hostId
         List<ResponseBookingDto> list = bookingService.getBookingsByAccommodation(accommodationId);
         return ResponseEntity.ok(list);
     }
 
     // Helper
-
-    // Extrae el id del usuario desde Authentication.
     private Long extractUserIdFromAuthentication(Authentication authentication) {
-
-        //TODO: verificar que está repetido
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new RuntimeException("Usuario no autenticado");
         }

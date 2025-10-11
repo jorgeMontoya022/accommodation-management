@@ -3,7 +3,7 @@ package co.edu.uniquindio.alojamientos.alojamientos_app.presentationLayer.contro
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.CreateCommentDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.HostResponseDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.ResponseCommentDto;
-import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service.CommentService;
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service.impl.CommentServiceImpl; // ✅ usar la impl
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Controlador REST para gestión de comentarios.
  * - Usa Authentication para extraer el ID del usuario (huésped/host).
- * - Toda la validación de reglas de negocio se delega a CommentService.
+ * - La validación y reglas de negocio se delegan a CommentServiceImpl.
  */
 @RestController
 @RequestMapping("/api/v1")
@@ -28,10 +28,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommentController {
 
-    private final CommentService commentService;
+    // Inyectar la implementación concreta
+    private final CommentServiceImpl commentService;
 
     // CREATE (guest)
-
     @Operation(summary = "Crear comentario (huésped) — solo después del checkout")
     @PostMapping("/comments")
     public ResponseEntity<ResponseCommentDto> createComment(
@@ -46,7 +46,6 @@ public class CommentController {
     }
 
     // REPLY (host)
-
     @Operation(summary = "Responder comentario (anfitrión)")
     @PostMapping("/comments/{id}/answer")
     public ResponseEntity<ResponseCommentDto> replyToComment(
@@ -59,8 +58,7 @@ public class CommentController {
         return ResponseEntity.ok(updated);
     }
 
-    // LIST (public / autenticado)
-
+    // LIST
     @Operation(summary = "Listar comentarios de un alojamiento (más recientes primero)")
     @GetMapping("/accommodation/{id}/comments")
     public ResponseEntity<List<ResponseCommentDto>> getCommentsByAccommodation(@PathVariable("id") Long accommodationId) {
@@ -69,13 +67,11 @@ public class CommentController {
     }
 
     // METRICS
-
     @Operation(summary = "Promedio de calificaciones de un alojamiento")
     @GetMapping("/accommodation/{id}/ratings/average")
     public ResponseEntity<Double> getAccommodationAverageRating(@PathVariable("id") Long accommodationId) {
         long count = commentService.getAccommodationCommentCount(accommodationId);
         if (count == 0) {
-            // Sin calificaciones → 204 (coincide con tu documentación)
             return ResponseEntity.noContent().build();
         }
         double avg = commentService.getAccommodationAverageRating(accommodationId);
@@ -83,7 +79,6 @@ public class CommentController {
     }
 
     // DELETE (guest)
-
     @Operation(summary = "Eliminar mi comentario (huésped)")
     @DeleteMapping("/comments/{id}")
     public ResponseEntity<Void> deleteComment(
@@ -96,10 +91,7 @@ public class CommentController {
     }
 
     // Helper
-
-    // Extrae el id del usuario desde Authentication (igual patrón que tus otros controllers)
     private Long extractUserIdFromAuthentication(Authentication authentication) {
-        //TODO: revisar que está repetido
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new RuntimeException("Usuario no autenticado");
         }

@@ -4,7 +4,7 @@ import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.ChangeP
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.RequestGuestDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.ResponseGuestDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.UpdateGuestDto;
-import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service.GuestService;
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service.impl.GuestServiceImpl; // ✅ usar la impl
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -22,8 +22,8 @@ import java.util.Map;
 
 /**
  * Controlador REST para gestión de Huéspedes.
- * - Algunas rutas son públicas (registro, verificación de email).
- * - Las rutas /me requieren autenticación; el userId se extrae desde Authentication.getPrincipal().
+ * - Rutas públicas: registro y verificación de email.
+ * - Rutas /me requieren autenticación; el userId se extrae desde Authentication.getPrincipal().
  */
 @RestController
 @RequestMapping("/api/v1/guests")
@@ -31,14 +31,10 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class GuestController {
 
-    private final GuestService guestService;
+    // Inyectar la implementación concreta
+    private final GuestServiceImpl guestService;
 
     // PUBLIC — Registro
-
-    /**
-     * Crea un nuevo huésped.
-     * Validaciones de negocio: email único, formatos, reglas específicas (en el service).
-     */
     @Operation(summary = "Registrar huésped")
     @PostMapping
     public ResponseEntity<ResponseGuestDto> createGuest(@Valid @RequestBody RequestGuestDto request) {
@@ -49,11 +45,6 @@ public class GuestController {
     }
 
     // PUBLIC — Verificación de email
-
-    /**
-     * Verifica disponibilidad de un email.
-     * Retorna {"available": true/false}
-     */
     @Operation(summary = "Verificar disponibilidad de email")
     @GetMapping("/email-availability")
     public ResponseEntity<Map<String, Boolean>> checkEmailAvailability(@RequestParam String email) {
@@ -62,7 +53,6 @@ public class GuestController {
     }
 
     // SECURED — Perfil del huésped autenticado
-
     @Operation(summary = "Obtener mi perfil", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/me")
     public ResponseEntity<ResponseGuestDto> getMyProfile(Authentication authentication) {
@@ -71,10 +61,7 @@ public class GuestController {
         return ResponseEntity.ok(dto);
     }
 
-    /**
-     * Actualiza datos del huésped autenticado.
-     * Campos permitidos y validaciones gestionados por UpdateGuestDto + service.
-     */
+    // SECURED — Actualizar perfil
     @Operation(summary = "Actualizar mi perfil", security = @SecurityRequirement(name = "bearerAuth"))
     @PutMapping("/me")
     public ResponseEntity<ResponseGuestDto> updateMyProfile(
@@ -86,10 +73,7 @@ public class GuestController {
         return ResponseEntity.ok(updated);
     }
 
-    /**
-     * Elimina la cuenta del huésped autenticado.
-     * Reglas de negocio (reservas asociadas, etc.) se validan en el service.
-     */
+    // SECURED — Eliminar cuenta (soft delete/inactivar)
     @Operation(summary = "Eliminar mi cuenta", security = @SecurityRequirement(name = "bearerAuth"))
     @DeleteMapping("/me")
     public ResponseEntity<Void> deleteMyAccount(Authentication authentication) {
@@ -98,12 +82,7 @@ public class GuestController {
         return ResponseEntity.ok().build();
     }
 
-    // SECURED — Contraseña
-
-    /**
-     * Cambiar la contraseña del huésped autenticado.
-     * Valida currentPassword vs almacenada, y reglas de complejidad en el service.
-     */
+    // SECURED — Cambiar contraseña
     @Operation(
             summary = "Cambiar mi contraseña",
             security = @SecurityRequirement(name = "bearerAuth"),
@@ -123,11 +102,7 @@ public class GuestController {
         return ResponseEntity.ok().build();
     }
 
-    // SECURED — Métricas básicas
-
-    /**
-     * Devuelve el número de reservas asociadas al huésped autenticado.
-     */
+    // SECURED — Métricas
     @Operation(summary = "Mis métricas: número de reservas", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/me/stats/bookings")
     public ResponseEntity<Map<String, Long>> getMyBookingCount(Authentication authentication) {
@@ -136,9 +111,6 @@ public class GuestController {
         return ResponseEntity.ok(Map.of("bookings", count));
     }
 
-    /**
-     * Indica si el huésped autenticado está activo.
-     */
     @Operation(summary = "Mi estado (activo/inactivo)", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/me/active")
     public ResponseEntity<Map<String, Boolean>> isActive(Authentication authentication) {
@@ -147,11 +119,8 @@ public class GuestController {
         return ResponseEntity.ok(Map.of("active", active));
     }
 
-    // Helpers
-
-    // Extrae el id del usuario desde Authentication (igual patrón que en tus otros controllers).
+    // Helper
     private Long extractUserIdFromAuthentication(Authentication authentication) {
-        //TODO: revisar que está duplicada
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new RuntimeException("Usuario no autenticado");
         }
