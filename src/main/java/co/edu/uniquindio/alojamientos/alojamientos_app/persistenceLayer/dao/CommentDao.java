@@ -35,7 +35,7 @@ public class CommentDao {
     }
 
     public List<CommentEntity> findByAccommodationId(Long accommodationId) {
-        return commentRepository.findByAccommodationIdOrderByDateCreationDesc(accommodationId);
+        return commentRepository.findByAccommodationEntityIdOrderByDateCreationDesc(accommodationId);
     }
 
     public double getAverageRatingByAccommodationId(Long accommodationId) {

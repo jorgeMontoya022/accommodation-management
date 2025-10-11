@@ -14,7 +14,7 @@ public interface CommentRepository extends JpaRepository<CommentEntity, Long> {
     /**
      * Buscar comentarios por alojamiento (ordenados por fecha descendente)
      */
-    List<CommentEntity> findByAccommodationIdOrderByDateCreationDesc(Long accommodationId);
+    List<CommentEntity> findByAccommodationEntityIdOrderByDateCreationDesc(Long accommodationId);
 
     /**
      * Verificar si existe comentario para una reserva
