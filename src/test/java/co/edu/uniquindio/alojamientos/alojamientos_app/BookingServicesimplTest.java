@@ -54,6 +54,13 @@ public class BookingServicesImplTest {
         guest.setEmail("pedro@host.com");
         guest.setActive(true);
 
+        // Host para el alojamiento (necesario para enviar email al anfitrión)
+        HostEntity host = new HostEntity();
+        host.setId(55L);
+        host.setName("Ana Host");
+        host.setEmail("anfitrion@host.com");
+        accommodation.setHostEntity(host);
+
         // Accommodation
         accommodation = new AccommodationEntity();
         accommodation.setId(5L);
