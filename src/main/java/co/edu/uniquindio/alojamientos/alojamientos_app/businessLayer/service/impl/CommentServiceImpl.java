@@ -53,7 +53,7 @@ public class CommentServiceImpl implements CommentService {
         // 5. Crear la entidad de comentario
         CommentEntity comment = new CommentEntity();
         comment.setRating(createCommentDto.getRating());
-        comment.setTex(createCommentDto.getText());
+        comment.setText(createCommentDto.getText());
         comment.setAccommodationEntity(booking.getAccommodationAssociated());
         comment.setAuthorGuest((GuestEntity) booking.getGuestEntity());
         comment.setBookingEntity(booking);

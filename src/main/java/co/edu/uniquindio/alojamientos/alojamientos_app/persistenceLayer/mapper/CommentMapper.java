@@ -11,13 +11,13 @@ import java.util.List;
 public interface CommentMapper {
 
     @Named("reviewEntityToReviewDto")
-    @Mapping(source = "tex", target = "text")
+    @Mapping(source = "text", target = "text")
     @Mapping(source = "authorGuest.name", target = "authorName")
     @Mapping(source = "accommodationEntity.qualification", target = "accommodationName")
     ResponseCommentDto reviewEntityToReviewDto(CommentEntity commentEntity);
 
     @Named("reviewDtoToReviewEntity")
-    @Mapping(source = "text", target = "tex")
+    @Mapping(source = "text", target = "text")
     @Mapping(target = "dateCreation", ignore = true)
     @Mapping(target = "dateResponse", ignore = true)
     @Mapping(target = "accommodationEntity", ignore = true)
@@ -25,7 +25,7 @@ public interface CommentMapper {
     @Mapping(target = "bookingEntity", ignore = true)
     CommentEntity reviewDtoToReviewEntity(CommentDto CommentDto);
 
-    @Mapping(source = "text", target = "tex")
+    @Mapping(source = "text", target = "text")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "dateCreation", ignore = true)
     @Mapping(target = "hostResponse", ignore = true)

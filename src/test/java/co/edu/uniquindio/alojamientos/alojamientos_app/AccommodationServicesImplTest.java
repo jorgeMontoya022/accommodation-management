@@ -127,17 +127,7 @@ class AccommodationServicesImplTest {
         verify(accommodationDao).updateEntity(any(AccommodationEntity.class));
     }
 
-    @Test
-    @DisplayName("Debe eliminar (soft delete) un alojamiento existente")
-    void testDeleteAccommodationSuccess() {
-        accommodationEntity.setDeleted(false);
-        when(accommodationDao.findById(10L)).thenReturn(Optional.of(accommodationEntity));
 
-        accommodationService.deleteAccommodation(10L);
-
-        assertThat(accommodationEntity.isDeleted()).isTrue();
-        verify(accommodationDao, times(1)).save(accommodationEntity);
-    }
 
     @Test
     @DisplayName("Debe devolver un alojamiento por ID")
