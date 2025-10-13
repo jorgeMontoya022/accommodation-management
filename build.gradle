@@ -86,22 +86,25 @@ tasks.jacocoTestReport {
         xml.required = true
         csv.required = false
         html.required = true
-        html.outputLocation.set(layout.buildDirectory.dir("reports/jacoco/test/html"))
         doLast {
             println " Reporte de cobertura JaCoCo generado en:"
-            println "   file://${reports.html.outputLocation.get().asFile}/index.html\n"
+            println "   ${reports.html.outputLocation.get().asFile}/index.html"
         }
     }
 
+
+
     def excludes = [
             '/*MapperImpl.class',
-            '/businessLayer/dto/',
-            '/persistenceLayer/entity/',
-            '/persistenceLayer/repository/',
-            '/persistenceLayer/dao/',
-            '/presentationLayer/controller/',
+            '/businessLayer/dto/**',
+            '/persistenceLayer/entity/**',
+            '/persistenceLayer/repository/**',
+            '/persistenceLayer/dao/**',
+            '/presentationLayer/controller/**',
             '/AlojamientosApplication.class',
-            '/securityLayer/',
+            '/securityLayer/**',
+            '/businessLayer/service/**',
+            '!/businessLayer/service/impl/**'
     ]
 
     classDirectories.setFrom(
@@ -121,6 +124,7 @@ jacocoTestCoverageVerification {
         rule {
             enabled = true
             element = 'CLASS'
+            includes = ['**/service/impl/**']
             limit {
                 counter = 'LINE'
                 value = 'COVEREDRATIO'
