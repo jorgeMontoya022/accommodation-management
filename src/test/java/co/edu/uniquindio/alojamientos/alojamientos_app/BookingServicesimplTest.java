@@ -59,17 +59,17 @@ public class BookingServicesImplTest {
         host.setId(55L);
         host.setName("Ana Host");
         host.setEmail("anfitrion@host.com");
-        accommodation.setHostEntity(host);
 
-        // Accommodation
+        // Accommodation (¡primero inicializamos!)
         accommodation = new AccommodationEntity();
         accommodation.setId(5L);
         accommodation.setQualification("Casa Bella");
         accommodation.setPriceNight(200_000.0);
         accommodation.setMaximumCapacity(4);
         accommodation.setStatusAccommodation(StatusAccommodation.ACTIVE);
+        accommodation.setHostEntity(host); // ← ahora sí, ya no da NPE
 
-        // Booking entity
+        // Booking entity base para los tests
         bookingEntity = new BookingEntity();
         bookingEntity.setId(100L);
         bookingEntity.setGuestEntity(guest);
@@ -99,6 +99,7 @@ public class BookingServicesImplTest {
         // Cancel DTO
         cancelDto = new CancelBookingRequestDto("Motivo urgente");
     }
+
 
 
     // CREATE: success + validations

@@ -63,6 +63,12 @@ public class BookingEntity {
     @OneToMany(mappedBy = "bookingEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CommentEntity> comments = new ArrayList<>();
 
+    @PrePersist
+    public void onCreate() {
+        // Fecha de creación y estado inicial
+        this.dateCreation = LocalDateTime.now();
+    }
+
 
 
 

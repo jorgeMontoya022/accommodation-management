@@ -11,6 +11,8 @@ import org.hibernate.annotations.Where;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "accommodations")
@@ -63,9 +65,15 @@ public class AccommodationEntity {
     @Column(name = "status_accommodation", nullable = false, length = 20)
     private StatusAccommodation statusAccommodation;
 
+    // Comentario: Guardamos varios servicios en tabla secundaria (evita enum() vacío y permite múltiples valores)
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(
+            name = "accommodation_services",
+            joinColumns = @JoinColumn(name = "accommodation_id")
+    )
+    @Column(name = "service", nullable = false, length = 50)
     @Enumerated(EnumType.STRING)
-    @Column(name = "services_accommodation", nullable = false, length = 20)
-    private TypeServicesEnum typeServicesEnum;
+    private Set<TypeServicesEnum> services = new HashSet<>();
 
     // Relación correcta con BookingEntity: mappedBy debe apuntar al campo ManyToOne en BookingEntity
     @OneToMany(mappedBy = "accommodationAssociated", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

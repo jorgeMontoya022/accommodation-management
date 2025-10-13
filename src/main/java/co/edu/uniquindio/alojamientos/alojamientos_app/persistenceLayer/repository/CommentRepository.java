@@ -1,6 +1,8 @@
 package co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.repository;
 
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.entity.CommentEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,24 +13,19 @@ import java.util.List;
 @Repository
 public interface CommentRepository extends JpaRepository<CommentEntity, Long> {
 
-    /**
-     * Buscar comentarios por alojamiento (ordenados por fecha descendente)
-     */
-    List<CommentEntity> findByAccommodationIdOrderByDateCreationDesc(Long accommodationId);
+    // Comentario: Navega la relación accommodationEntity -> id y ordena por dateCreation desc
+    List<CommentEntity> findByAccommodationEntity_IdOrderByDateCreationDesc(Long accommodationId);
 
-    /**
-     * Verificar si existe comentario para una reserva
-     */
-    boolean existsByBookingEntityId(Long bookingId);
+    // (Opcional) Versión paginada para listas largas
+    Page<CommentEntity> findByAccommodationEntity_Id(Long accommodationId, Pageable pageable);
 
-    /**
-     * Obtener promedio de calificación de un alojamiento
-     */
+    // Comentario: Verifica existencia por la relación bookingEntity -> id
+    boolean existsByBookingEntity_Id(Long bookingId);
+
+    // Comentario: Promedio de calificación (puede ser null si no hay comentarios)
     @Query("SELECT AVG(c.rating) FROM CommentEntity c WHERE c.accommodationEntity.id = :accommodationId")
-    double getAverageRatingByAccommodationId(@Param("accommodationId") Long accommodationId);
+    Double getAverageRatingByAccommodationId(@Param("accommodationId") Long accommodationId);
 
-    /**
-     * Contar comentarios por alojamiento
-     */
-    long countByAccommodationEntityId(Long accommodationId);
+    // Comentario: Conteo por alojamiento usando relación accommodationEntity -> id
+    long countByAccommodationEntity_Id(Long accommodationId);
 }

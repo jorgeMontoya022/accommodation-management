@@ -13,15 +13,15 @@ import java.io.IOException;
 
 
 @Component
-public class JwtAuthenticationEntryPoint  implements AuthenticationEntryPoint {
+public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        ResponseDto<String> dto = new ResponseDto<>(true, "No tienes permisos para acceder a este recurso");
+    public void commence(HttpServletRequest request,
+                         HttpServletResponse response,
+                         AuthenticationException authException) throws IOException {
+        ResponseDto<String> dto = new ResponseDto<>(true, "No autenticado");
         response.setContentType("application/json");
-        response.setStatus(403);
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
         response.getWriter().write(new ObjectMapper().writeValueAsString(dto));
-        response.getWriter().flush();
-        response.getWriter().close();
-
     }
 }
+

@@ -61,7 +61,7 @@ class CommentServiceImplTest {
 
         CommentEntity saved = new CommentEntity();
         saved.setId(100L);
-        saved.setTex("Excelente");
+        saved.setText("Excelente");
 
         ResponseCommentDto responseMock = new ResponseCommentDto();
         responseMock.setId(100L);
