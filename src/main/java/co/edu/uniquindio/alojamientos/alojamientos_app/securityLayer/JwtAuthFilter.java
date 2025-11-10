@@ -1,5 +1,6 @@
 package co.edu.uniquindio.alojamientos.alojamientos_app.securityLayer;
 
+import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.dao.TokenDao;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
@@ -47,6 +48,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (log.isDebugEnabled()) {
             log.debug("Authorization header: {}", header);
         }
+
 
         // Si no hay Bearer, seguimos la cadena sin tocar el contexto
         if (header == null || !header.startsWith("Bearer ")) {

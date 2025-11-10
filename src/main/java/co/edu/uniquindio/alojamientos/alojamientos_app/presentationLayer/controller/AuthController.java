@@ -2,17 +2,21 @@ package co.edu.uniquindio.alojamientos.alojamientos_app.presentationLayer.contro
 
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.LoginDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.LoginResponseDto;
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service.AuthService;
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service.impl.LoginServiceImpl; // ✅ impl
 import co.edu.uniquindio.alojamientos.alojamientos_app.securityLayer.JWTUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+
 
 @RestController
 @RequestMapping("/api/v1/auth") //  alíneado con SecurityConfig
@@ -22,6 +26,8 @@ public class AuthController {
 
     private final LoginServiceImpl loginService; //  inyectar la implementación
     private final JWTUtils jwtUtils;
+    private final AuthService authService;
+
 
     @Operation(summary = "Login huésped")
     @PostMapping("/guest/login")
@@ -63,4 +69,19 @@ public class AuthController {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .body(info);
     }
+    @Operation(summary = "Cerrar sesión")
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("mensaje", "Token no proporcionado"));
+        }
+
+        String token = authHeader.substring(7);
+        authService.logout(token);
+
+        return ResponseEntity.ok(Map.of("mensaje", "Sesión cerrada correctamente"));
+    }
+
 }
