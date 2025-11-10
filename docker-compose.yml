@@ -1,0 +1,29 @@
+version: "3.9"
+services:
+  db:
+    image: mariadb:11
+    environment:
+      MARIADB_DATABASE: alojamientos_db
+      MARIADB_USER: admin
+      MARIADB_PASSWORD: admin
+      MARIADB_ROOT_PASSWORD: rootpass
+    ports: ["3306:3306"]
+    volumes: [ "db_data:/var/lib/mysql" ]
+
+  app:
+    build: .
+    depends_on: [ db ]
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:mariadb://db:3306/alojamientos_db
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: admin
+      # JWT_SECRET: super-secret
+      # CLOUDINARY_URL: cloudinary://<api_key>:<api_secret>@<cloud_name>
+      # MAIL_HOST: smtp.tuhost.com
+      # MAIL_PORT: 587
+      # MAIL_USERNAME: mailer
+      # MAIL_PASSWORD: mailerpass
+    ports: ["8080:8080"]
+volumes:
+  db_data:
