@@ -35,7 +35,7 @@ services:
       DB_USERNAME: admin
       DB_PASSWORD: admin
       LIQUIBASE_ENABLED: "true"
-      JPA_DDL_AUTO: validate
+      JPA_DDL_AUTO: update
       JPA_SHOW_SQL: "false"
       JPA_FORMAT_SQL: "false"
 
