@@ -2,7 +2,7 @@ name: Build & Publish to GHCR
 
 on:
   push:
-    branches: [ main ]   # publica cuando hagas push a main (cámbialo si quieres)
+    branches: [ main ]   
 
 jobs:
   docker:
