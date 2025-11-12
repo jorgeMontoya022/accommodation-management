@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.beans.factory.annotation.Value;
 
 @Service
 @Transactional
@@ -22,6 +23,8 @@ public class GuestServiceImpl implements GuestService {
     private final GuestDao guestDao;
     private final GuestMapper guestMapper;
     private final PasswordEncoder passwordEncoder;
+    @Value("${app.auth.auto-verify:false}")
+    private boolean autoVerifyUsers;
 
     @Override
     public ResponseGuestDto createGuest(RequestGuestDto guestDto) {
@@ -39,12 +42,22 @@ public class GuestServiceImpl implements GuestService {
         String encryptedPassword = passwordEncoder.encode(guestDto.getPassword());
         guestEntity.setPassword(encryptedPassword);
 
-        // 3. Guardar
+        // 3. Auto-verificación / activar cuenta si el flag está encendido
+        if (autoVerifyUsers) {
+            guestEntity.setActive(true);     // <-- clave para permitir login inmediato
+            // Si tu entidad tiene más campos de verificación (ej. emailVerified, verificationDate),
+            // setéalos aquí también.
+            // guestEntity.setEmailVerified(true);
+            // guestEntity.setVerificationDate(LocalDateTime.now());
+        }
+
+        // 4. Guardar
         ResponseGuestDto createdGuest = guestDao.saveEntity(guestEntity);
         log.info("Huésped creado exitosamente con ID: {}", createdGuest.getId());
 
         return createdGuest;
     }
+
 
     @Override
     @Transactional(readOnly = true)

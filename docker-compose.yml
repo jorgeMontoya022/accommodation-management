@@ -41,11 +41,17 @@ services:
 
       # Otras variables opcionales para cuando se integre estos módulos
       # JWT_SECRET: super-secret
-      # CLOUDINARY_URL: cloudinary://<api_key>:<api_secret>@<cloud_name>
-      # MAIL_HOST: smtp.tuhost.com
-      # MAIL_PORT: 587
-      # MAIL_USERNAME: mailer
-      # MAIL_PASSWORD: mailerpass
+        # SMTP Gmail (con App Password)
+      SMTP_HOST: smtp.gmail.com
+      SMTP_PORT: "587"
+      SMTP_USERNAME: "teayudamo3@gmail.com"
+      SMTP_PASSWORD: "xngu vxtd psds dbmt"
+      SMTP_TLS: "true"
+
+      # Flags de la app
+      EMAIL_ENABLED: "true"          # habilita envío real
+      AUTO_VERIFY_USERS: "true"      # auto-verificar usuarios al registrarse (salta correo)
+
     ports:
       - "8080:8080"
 

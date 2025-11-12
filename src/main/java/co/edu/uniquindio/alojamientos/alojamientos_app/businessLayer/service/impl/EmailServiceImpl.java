@@ -23,20 +23,14 @@ public class EmailServiceImpl implements EmailService {
     public void sendMail(SendEmailDto sendEmailDto) throws Exception {
 
         Email email = EmailBuilder.startingBlank()
-                .from("test@domain.com") // correo válido de prueba
-                //.from("SMTP_USERNAME")
+                .from("Alojamientos", "teayudamo3@gmail.com") // <= usa tu username real
                 .to(sendEmailDto.getRecipient())
                 .withSubject(sendEmailDto.getSubject())
                 .withPlainText(sendEmailDto.getBody())
                 .buildEmail();
 
-        /*try (Mailer mailer = MailerBuilder
-                .withSMTPServer("smtp.gmail.com", 587, "SMTP_USERNAME", "SMTP_PASSWORD")
-                .withTransportStrategy(TransportStrategy.SMTP_TLS)
-                .withDebugLogging(true)
-                .buildMailer()) {*/
+        mailer.sendMail(email);
 
-            mailer.sendMail(email);
-        }
+    }
 
     }
