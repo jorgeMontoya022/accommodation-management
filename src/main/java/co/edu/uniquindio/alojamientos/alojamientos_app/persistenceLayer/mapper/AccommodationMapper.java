@@ -9,11 +9,12 @@ import org.mapstruct.*;
 import java.util.List;
 
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE,  uses = { ImageAccommodationMapper.class })
 public interface AccommodationMapper {
 
     @Named("accommodationEntityToAccommodationDto")
     @Mapping(source = "hostEntity.id", target = "idHost")
+    @Mapping(source = "images", target = "images")
     ResponseAccommodationDto accommodationEntityToAccommodationDto(AccommodationEntity accommodationEntity);
 
     ImageAccommodationDto imageEntityToDto(ImageAccommodation image);

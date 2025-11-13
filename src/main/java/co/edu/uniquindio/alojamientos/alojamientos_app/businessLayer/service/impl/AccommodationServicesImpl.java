@@ -125,12 +125,11 @@ public class AccommodationServicesImpl implements AccommodationService {
 
     @Override
     @Transactional(readOnly = true)
-    public AccommodationEntity getAccommodationById(Long id) {
-        return accommodationDao.findById(id)
-                .orElseThrow(() -> {
-                    log.warn("Alojamiento no encontrado con ID: {}", id);
-                    return new RuntimeException("Alojamiento no encontrado con ID: " + id);
-                });
+    public ResponseAccommodationDto getAccommodationById(Long id) {
+        AccommodationEntity entity = accommodationRepository.fetchWithImagesById(id)
+                .orElseThrow(() -> new RuntimeException("Alojamiento no encontrado"));
+
+        return accommodationMapper.accommodationEntityToAccommodationDto(entity);
     }
 
     @Override

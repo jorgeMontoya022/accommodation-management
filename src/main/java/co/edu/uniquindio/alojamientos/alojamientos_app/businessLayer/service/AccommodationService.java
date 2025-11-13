@@ -16,7 +16,7 @@ public interface AccommodationService {
 
     void deleteAccommodation(Long id); // Validará reservas futuras en la impl
 
-    AccommodationEntity getAccommodationById(Long id);
+    public ResponseAccommodationDto getAccommodationById(Long id);
 
     List<ResponseAccommodationDto> getAccommodationsByCity(String city);
 

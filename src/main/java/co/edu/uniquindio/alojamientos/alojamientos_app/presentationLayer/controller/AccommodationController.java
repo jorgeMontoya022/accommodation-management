@@ -67,8 +67,8 @@ public class AccommodationController {
             })
     @GetMapping("/{id}")
     public ResponseEntity<ResponseAccommodationDto> getById(@PathVariable Long id) {
-        AccommodationEntity entity = accommodationService.getAccommodationById(id);
-        return ResponseEntity.ok(accommodationMapper.accommodationEntityToAccommodationDto(entity));
+        ResponseAccommodationDto dto = accommodationService.getAccommodationById(id);
+        return ResponseEntity.ok(dto);
     }
 
     @Operation(summary = "Listar alojamientos por ciudad")
