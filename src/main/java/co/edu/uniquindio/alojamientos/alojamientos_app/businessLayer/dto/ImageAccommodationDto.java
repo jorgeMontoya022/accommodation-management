@@ -32,7 +32,8 @@ public class ImageAccommodationDto {
     @Max(value = 6, message = "El orden máximo es 6")
     private Integer displayOrder;
 
-    @Schema(description = "ID del alojamiento asociado a la imagen", example = "10", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotNull(message = "El ID del alojamiento es obligatorio")
+    @Schema(description = "ID del alojamiento asociado a la imagen", example = "10",
+            accessMode = Schema.AccessMode.READ_ONLY)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long idAccommodation;
 }
