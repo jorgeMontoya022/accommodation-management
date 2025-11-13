@@ -17,10 +17,6 @@ public interface AccommodationMapper {
     @Mapping(source = "images", target = "images")
     ResponseAccommodationDto accommodationEntityToAccommodationDto(AccommodationEntity accommodationEntity);
 
-    ImageAccommodationDto imageEntityToDto(ImageAccommodation image);
-
-    List<ImageAccommodationDto> imageEntitiesToDtos(List<ImageAccommodation> images);
-
     @Named("accommodationEntityToAccommodationRequestDto")
     RequestAccommodationDto accommodationEntityToAccommodationRequestDto(AccommodationEntity accommodation);
 
