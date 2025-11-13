@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -33,11 +34,11 @@ public class RequestAccommodationDto {
     private String city;
 
     @Schema(description = "Latitud del alojamiento", example = "4.6374", requiredMode = Schema.RequiredMode.REQUIRED)
-    @Min(value = 0, message = "La latitud es obligatoria")
+    @Min(value = -180, message = "La latitud es obligatoria")
     private float latitude;
 
     @Schema(description = "Longitud del alojamiento", example = "-75.5705", requiredMode = Schema.RequiredMode.REQUIRED)
-    @Min(value = 0, message = "La longitud es obligatoria")
+    @Min(value = -180, message = "La longitud es obligatoria")
     private float longitude;
 
     @Schema(description = "Precio por noche del alojamiento en pesos colombianos", example = "250000", requiredMode = Schema.RequiredMode.REQUIRED)
@@ -55,4 +56,9 @@ public class RequestAccommodationDto {
     @Schema(description = "Id del anfitrión asociado al alojamiento", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = "El id del anfitrión es obligatorio")
     private Long idHost;
+
+    @Schema(description = "Imágenes del alojamiento")
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private List<ImageAccommodationDto> images;
+
 }

@@ -14,7 +14,7 @@ public interface AccommodationMapper {
 
     @Named("accommodationEntityToAccommodationDto")
     @Mapping(source = "hostEntity.id", target = "idHost")
-    @Mapping(source = "images", target = "images")
+    @Mapping(source = "images", target = "images", qualifiedByName = "mapImageList")
     ResponseAccommodationDto accommodationEntityToAccommodationDto(AccommodationEntity accommodationEntity);
 
     @Named("accommodationEntityToAccommodationRequestDto")
@@ -45,4 +45,5 @@ public interface AccommodationMapper {
 
     @IterableMapping(qualifiedByName = "accommodationDtoToAccommodationEntity")
     List<AccommodationEntity> getAccommodationsEntity(List<RequestAccommodationDto> accommodationDtoList);
+
 }

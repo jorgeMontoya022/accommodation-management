@@ -57,6 +57,7 @@ public interface ImageAccommodationMapper {
      * @param imageAccommodationList lista de entidades a convertir
      * @return lista de DTOs
      */
+    @Named("mapImageList")
     @IterableMapping(qualifiedByName = "imageAccommodationEntityToImageAccommodationDto")
     List<ImageAccommodationDto> getImageAccommodationsDto(List<ImageAccommodation> imageAccommodationList);
 
