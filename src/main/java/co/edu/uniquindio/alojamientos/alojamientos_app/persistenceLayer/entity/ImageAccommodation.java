@@ -31,4 +31,8 @@ public class ImageAccommodation {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "accommodation_id", nullable = false)
     private AccommodationEntity accommodationEntity;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_accommodation", nullable = false)
+    private AccommodationEntity accommodation;
 }

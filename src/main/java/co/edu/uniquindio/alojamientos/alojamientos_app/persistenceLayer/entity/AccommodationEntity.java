@@ -94,6 +94,7 @@ public class AccommodationEntity {
     @Column(name = "deleted", nullable = false)
     private boolean deleted = false;
 
+
     @PrePersist
     public void onCreate() {
         // Fecha de creación y estado inicial

@@ -1,11 +1,13 @@
 package co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.mapper;
 
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.ImageAccommodationDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.RequestAccommodationDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.ResponseAccommodationDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.entity.AccommodationEntity;
+import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.entity.ImageAccommodation;
 import org.mapstruct.*;
-
 import java.util.List;
+
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface AccommodationMapper {
@@ -13,6 +15,10 @@ public interface AccommodationMapper {
     @Named("accommodationEntityToAccommodationDto")
     @Mapping(source = "hostEntity.id", target = "idHost")
     ResponseAccommodationDto accommodationEntityToAccommodationDto(AccommodationEntity accommodationEntity);
+
+    ImageAccommodationDto imageEntityToDto(ImageAccommodation image);
+
+    List<ImageAccommodationDto> imageEntitiesToDtos(List<ImageAccommodation> images);
 
     @Named("accommodationEntityToAccommodationRequestDto")
     RequestAccommodationDto accommodationEntityToAccommodationRequestDto(AccommodationEntity accommodation);
@@ -22,8 +28,8 @@ public interface AccommodationMapper {
     @Mapping(target = "dateUpdate", ignore = true)
     @Mapping(target = "bookingEntityList", ignore = true)
     @Mapping(target = "hostEntity", ignore = true)
-    @Mapping(target = "images", ignore = true)
     @Mapping(target = "comments", ignore = true)
+    @Mapping(target = "images", ignore = true)
     AccommodationEntity accommodationDtoToAccommodationEntity(RequestAccommodationDto accommodationDto);
 
     @Mapping(target = "id", ignore = true)

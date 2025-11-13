@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -69,4 +70,7 @@ public class ResponseAccommodationDto {
     @Schema(description = "Id del anfitrión asociado al alojamiento", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = "El id del anfitrión es obligatorio")
     private String idHost;
+
+    @Schema(description = "Imágenes del alojamiento")
+    private List<ImageAccommodationDto> images;
 }
