@@ -7,10 +7,12 @@ import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.CancelB
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service.impl.BookingServicesImpl; // ✅ usar la impl
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.entity.StatusReservation;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -131,6 +133,21 @@ public class BookingController {
         return ResponseEntity.ok(completed);
     }
 
+    @Operation(
+            summary = "Cambiar estado de una reserva",
+            description = "Permite cambiar el estado de la reserva (PENDING, CONFIRMED, PAID, CANCELED, COMPLETED, etc.)"
+    )
+    @ApiResponse(responseCode = "200", description = "Estado actualizado")
+    @PutMapping("/{id}/state")
+    public ResponseEntity<Void> changeReservationState(
+            @PathVariable Long id,
+            @RequestParam("state") String state
+    ) {
+        bookingService.changeState(id, state);
+        return ResponseEntity.ok().build();
+    }
+
+
     // Helpers
     private Long extractUserIdFromAuthentication(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -142,4 +159,5 @@ public class BookingController {
         }
         throw new RuntimeException("No se pudo extraer el ID del usuario");
     }
+
 }

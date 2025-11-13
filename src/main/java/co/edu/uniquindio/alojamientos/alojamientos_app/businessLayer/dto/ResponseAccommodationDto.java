@@ -63,9 +63,9 @@ public class ResponseAccommodationDto {
     @NotNull(message = "El estado del alojamiento es obligatorio")
     private StatusAccommodation statusAccommodation;
 
-    @Schema(description = "Tipo de servicio que ofrece el alojamiento", example = "WI-FI", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotNull(message = "El tipo de servicio es obligatorio")
-    private TypeServicesEnum typeServicesEnum;
+    @Schema(description = "Servicios del alojamiento", example = "[\"WIFI\", \"PARKING\"]")
+    @NotEmpty(message = "Debe tener al menos un servicio")
+    private java.util.List<TypeServicesEnum> services;
 
     @Schema(description = "Id del anfitrión asociado al alojamiento", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = "El id del anfitrión es obligatorio")
@@ -73,4 +73,10 @@ public class ResponseAccommodationDto {
 
     @Schema(description = "Imágenes del alojamiento")
     private List<ImageAccommodationDto> images;
+
+    @Schema(description = "Dirección completa del alojamiento",
+            example = "Calle 10 #15-23, Barrio Centro")
+    @NotBlank(message = "La dirección es obligatoria")
+    private String address;
+
 }

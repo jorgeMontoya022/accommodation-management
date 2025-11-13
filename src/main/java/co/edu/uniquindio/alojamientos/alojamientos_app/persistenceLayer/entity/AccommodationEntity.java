@@ -94,6 +94,10 @@ public class AccommodationEntity {
     @Column(name = "deleted", nullable = false)
     private boolean deleted = false;
 
+    @Column(name = "address_accommodation", nullable = false, length = 200)
+    private String address;
+
+
 
     @PrePersist
     public void onCreate() {

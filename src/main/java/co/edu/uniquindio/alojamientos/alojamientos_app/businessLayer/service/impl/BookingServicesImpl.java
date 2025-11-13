@@ -15,6 +15,7 @@ import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.entity.B
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.entity.GuestEntity;
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.entity.StatusReservation;
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.mapper.BookingMapper;
+import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.repository.BookingRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -541,4 +542,28 @@ public class BookingServicesImpl implements BookingService {
 
         return availableDates;
     }
+    private final BookingRepository bookingRepository;
+
+    @Override
+    @Transactional
+    public void changeState(Long bookingId, String newState) {
+        log.info("Cambiando estado de reserva {} a {}", bookingId, newState);
+
+        BookingEntity booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new IllegalArgumentException("Reserva no encontrada con id " + bookingId));
+
+        StatusReservation status;
+        try {
+            status = StatusReservation.valueOf(newState);
+        } catch (IllegalArgumentException ex) {
+            throw new IllegalArgumentException("Estado de reserva inválido: " + newState);
+        }
+
+        booking.setStatusReservation(status);
+        bookingRepository.save(booking);
+
+        log.info("Estado de reserva {} actualizado a {}", bookingId, status);
+    }
+
+
 }

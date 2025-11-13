@@ -49,9 +49,9 @@ public class RequestAccommodationDto {
     @Min(value = 1, message = "La capacidad máxima debe ser al menos 1 persona")
     private int maximumCapacity;
 
-    @Schema(description = "Tipo de servicio que ofrece el alojamiento", example = "WI-FI", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotNull(message = "El tipo de servicio es obligatorio")
-    private TypeServicesEnum typeServicesEnum;
+    @Schema(description = "Servicios del alojamiento", example = "[\"WIFI\", \"PARKING\"]")
+    @NotEmpty(message = "Debe tener al menos un servicio")
+    private java.util.List<TypeServicesEnum> services;
 
     @Schema(description = "Id del anfitrión asociado al alojamiento", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = "El id del anfitrión es obligatorio")
@@ -60,5 +60,11 @@ public class RequestAccommodationDto {
     @Schema(description = "Imágenes del alojamiento")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private List<ImageAccommodationDto> images;
+
+    @Schema(description = "Dirección completa del alojamiento",
+            example = "Calle 10 #15-23, Barrio Centro")
+    @NotBlank(message = "La dirección es obligatoria")
+    @Size(max = 200, message = "La dirección no puede exceder 200 caracteres")
+    private String address;
 
 }

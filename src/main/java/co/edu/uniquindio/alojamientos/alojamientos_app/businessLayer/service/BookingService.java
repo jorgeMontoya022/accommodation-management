@@ -119,6 +119,7 @@ public interface BookingService {
      */
     List<LocalDate> getAvailableDates(Long accommodationId, LocalDate startDate, LocalDate endDate);
 
+    public void changeState(Long id, String stateParam);
 
 
 
