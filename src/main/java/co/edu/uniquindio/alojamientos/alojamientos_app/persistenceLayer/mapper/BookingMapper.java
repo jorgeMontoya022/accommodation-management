@@ -13,6 +13,9 @@ public interface BookingMapper {
     @Named("bookingEntityToBookingDto")
     @Mapping(source = "accommodationAssociated.id", target = "idAccommodation")
     @Mapping(source = "guestEntity.id", target = "idGuest")
+    @Mapping(target = "guestName", source = "guestEntity.name")
+    @Mapping(target = "guestEmail", source = "guestEntity.email")
+    @Mapping(target = "guestPhone", source = "guestEntity.phone")
     ResponseBookingDto bookingEntityToBookingDto(BookingEntity bookingEntity);
 
     @Named("bookingDtoToBookingEntity")

@@ -46,4 +46,13 @@ public class ResponseBookingDto {
 
     @Schema(description = "Valor total de la reserva en pesos colombianos", example = "1250000.00")
     private double totalValue;
+
+    @Schema(description = "Nombre del huésped", example = "Juan Pérez")
+    private String guestName;
+
+    @Schema(description = "Email del huésped", example = "juan@example.com")
+    private String guestEmail;
+
+    @Schema(description = "Teléfono del huésped", example = "+57 300 123 4567")
+    private String guestPhone;
 }
