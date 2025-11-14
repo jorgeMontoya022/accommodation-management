@@ -149,16 +149,14 @@ public class AccommodationServicesImpl implements AccommodationService {
     @Override
     @Transactional(readOnly = true)
     public Page<ResponseAccommodationDto> searchWithFilters(Pageable pageable) {
-        // Implementación mínima: listado paginado sin filtros.
-        // Próximo paso: Specifications para filtros combinables.
-        Page<AccommodationEntity> page = accommodationRepository.findAll(pageable);
+        Page<AccommodationEntity> page =
+                accommodationRepository.findAllByDeletedFalse(pageable);
         return page.map(accommodationMapper::accommodationEntityToAccommodationDto);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<ResponseAccommodationDto> listByHost(Long hostId, Pageable pageable) {
-        // Lista paginada de alojamientos del host (respetando soft delete)
         Page<AccommodationEntity> page =
                 accommodationRepository.findAllByHostEntity_IdAndDeletedFalse(hostId, pageable);
         return page.map(accommodationMapper::accommodationEntityToAccommodationDto);

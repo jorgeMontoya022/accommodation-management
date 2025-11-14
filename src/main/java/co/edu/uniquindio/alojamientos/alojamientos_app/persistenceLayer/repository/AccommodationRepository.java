@@ -48,6 +48,7 @@ public interface AccommodationRepository extends
     /**
      * Listar alojamientos de un host (paginado).
      */
+    @EntityGraph(attributePaths = {"images"})
     Page<AccommodationEntity> findAllByHostEntity_IdAndDeletedFalse(Long hostId, Pageable pageable);
 
     /**
@@ -75,4 +76,8 @@ public interface AccommodationRepository extends
             "LEFT JOIN FETCH a.images " +
             "WHERE a.id = :id AND a.deleted = false")
     Optional<AccommodationEntity> fetchWithImagesById(@Param("id") Long id);
+    /** Listado general con imágenes (para la búsqueda paginada) */
+    @EntityGraph(attributePaths = {"images"})
+    Page<AccommodationEntity> findAllByDeletedFalse(Pageable pageable);
+
 }
