@@ -48,23 +48,43 @@ public class AccommodationServicesImpl implements AccommodationService {
             throw new IllegalArgumentException("El anfitrión no está activo");
         }
 
-        // 2) Mapear DTO -> Entity
+        // 2) Mapear DTO -> Entity (SIN imágenes)
         AccommodationEntity accommodation =
                 accommodationMapper.accommodationDtoToAccommodationEntity(requestAccommodationDto);
 
-        // 3) Setear datos de dominio que no vienen en el request
+        // 3) Setear datos de dominio
         accommodation.setHostEntity(host);
         accommodation.setStatusAccommodation(StatusAccommodation.ACTIVE);
 
-        // 4) Reglas de negocio
+        // 4) MAPEAR IMÁGENES MANUALMENTE DESDE EL DTO
+        if (requestAccommodationDto.getImages() != null &&
+                !requestAccommodationDto.getImages().isEmpty()) {
+
+            List<ImageAccommodation> imageEntities = requestAccommodationDto.getImages()
+                    .stream()
+                    .map(dto -> {
+                        ImageAccommodation img = new ImageAccommodation();
+                        img.setUrl(dto.getUrl());
+                        img.setPrincipal(dto.getIsPrincipal());
+                        img.setDisplayOrder(dto.getDisplayOrder());
+                        img.setAccommodationEntity(accommodation);
+                        return img;
+                    })
+                    .toList();
+
+            accommodation.setImages(imageEntities);
+        }
+
+        // 5) Validaciones de negocio
         validateAccommodationRules(accommodation);
 
-        // 5) Persistir
+        // 6) Guardar
         AccommodationEntity saved = accommodationDao.saveEntity(accommodation);
 
         log.info("Alojamiento creado exitosamente con ID: {}", saved.getId());
         return accommodationMapper.accommodationEntityToAccommodationDto(saved);
     }
+
 
     /** Reglas de negocio del alojamiento */
     private void validateAccommodationRules(AccommodationEntity accommodation) {

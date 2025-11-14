@@ -58,7 +58,6 @@ public class RequestAccommodationDto {
     private Long idHost;
 
     @Schema(description = "Imágenes del alojamiento")
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private List<ImageAccommodationDto> images;
 
     @Schema(description = "Dirección completa del alojamiento",
