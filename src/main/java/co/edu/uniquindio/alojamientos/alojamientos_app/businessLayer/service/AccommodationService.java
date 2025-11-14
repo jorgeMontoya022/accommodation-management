@@ -14,7 +14,7 @@ public interface AccommodationService {
 
     ResponseAccommodationDto updateAccommodation(Long id, RequestAccommodationDto requestAccommodationDto);
 
-    void deleteAccommodation(Long id); // Validará reservas futuras en la impl
+    void deleteAccommodation(Long id, Long hostId); // Validará reservas futuras en la impl
 
     public ResponseAccommodationDto getAccommodationById(Long id);
 

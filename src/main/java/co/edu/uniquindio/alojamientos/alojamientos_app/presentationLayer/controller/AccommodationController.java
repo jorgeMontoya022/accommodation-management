@@ -136,10 +136,15 @@ public class AccommodationController {
                     @ApiResponse(responseCode = "409", description = "No es posible eliminar, existen reservas futuras")
             })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAccommodation(@PathVariable Long id) {
-        accommodationService.deleteAccommodation(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Void> deleteAccommodation(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
+            @PathVariable Long id
+    ) {
+        Long hostId = extractUserIdFromAuthorization(authorization);
+        accommodationService.deleteAccommodation(id, hostId);
+        return ResponseEntity.ok().build(); // o .noContent().build() si quieres 204
     }
+
 
     // Helpers
     private Long extractUserIdFromAuthorization(String authorization) {

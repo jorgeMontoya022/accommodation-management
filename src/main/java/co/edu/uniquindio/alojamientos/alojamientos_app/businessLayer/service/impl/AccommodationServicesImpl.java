@@ -18,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.access.AccessDeniedException;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -121,25 +122,36 @@ public class AccommodationServicesImpl implements AccommodationService {
     }
 
     @Override
-    public void deleteAccommodation(Long id) {
-        AccommodationEntity accommodation = accommodationDao.findById(id)
+    public void deleteAccommodation(Long id, Long authenticatedHostId) {
+        log.info("Solicitud de eliminación para alojamiento {} por host {}", id, authenticatedHostId);
+
+        // 1) Cargar alojamiento no eliminado
+        AccommodationEntity accommodation = accommodationRepository
+                .findByIdAndDeletedFalse(id)
                 .orElseThrow(() -> new RuntimeException("Alojamiento no encontrado"));
-        Long bookingCount = accommodationDao.countBookingsByAccommodationId(id);
 
-
-        log.info("Alojamiento eliminado (soft delete) con ID: {}", id);
-
-
-        if(bookingCount > 0) {
-            throw new IllegalArgumentException(String.format("No se puede eliminar el alojamiento porque tiene %d reserva(s) asociada(s)", bookingCount));
+        // 2) Verificar que pertenece al host autenticado
+        Long ownerId = accommodation.getHostEntity().getId();
+        if (!ownerId.equals(authenticatedHostId)) {
+            log.warn("Host {} intentó eliminar alojamiento {} que pertenece a host {}",
+                    authenticatedHostId, id, ownerId);
+            throw new AccessDeniedException("No es propietario de este alojamiento");
         }
-        if(!accommodationDao.deleteById(id)) {
-            throw new RuntimeException("Error al eliminar el alojamiento con ID: " + id);
-        }
-        accommodation.setStatusAccommodation(StatusAccommodation.DELETED);
-        accommodation.setDateUpdate(LocalDateTime.now());
 
-        accommodationDao.updateEntity(accommodation);
+        // 3) Verificar reservas asociadas (puedes afinar la regla más adelante: solo futuras, solo PAID/CONFIRMED, etc.)
+        Long bookingCount = bookingRepository.countBookingsByAccommodationId(id);
+        if (bookingCount > 0) {
+            throw new IllegalStateException(
+                    String.format("No se puede eliminar el alojamiento porque tiene %d reserva(s) asociada(s)", bookingCount)
+            );
+        }
+
+        // 4) Soft delete real: delegar en JPA + @SQLDelete
+        // @SQLDelete ejecuta:
+        //   UPDATE accommodations SET deleted = true, date_update_accommodation = NOW() WHERE id = ?
+        accommodationRepository.delete(accommodation);
+
+        log.info("Alojamiento {} marcado como eliminado (soft delete) por host {}", id, authenticatedHostId);
     }
 
 
