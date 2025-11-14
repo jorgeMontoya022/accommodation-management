@@ -138,7 +138,7 @@ public class BookingController {
             description = "Permite cambiar el estado de la reserva (PENDING, CONFIRMED, PAID, CANCELED, COMPLETED, etc.)"
     )
     @ApiResponse(responseCode = "200", description = "Estado actualizado")
-    @PutMapping("/{id}/state")
+    @PutMapping("/{id}/status")
     public ResponseEntity<Void> changeReservationState(
             @PathVariable Long id,
             @RequestParam("state") String state

@@ -71,6 +71,8 @@ public interface AccommodationRepository extends
      * Cuando necesites la galería sin N+1 (por ejemplo, para armar DTO con imagen principal).
      */
     @EntityGraph(attributePaths = {"images"})
-    @Query("SELECT a FROM AccommodationEntity a WHERE a.id = :id")
+    @Query("SELECT a FROM AccommodationEntity a " +
+            "LEFT JOIN FETCH a.images " +
+            "WHERE a.id = :id AND a.deleted = false")
     Optional<AccommodationEntity> fetchWithImagesById(@Param("id") Long id);
 }

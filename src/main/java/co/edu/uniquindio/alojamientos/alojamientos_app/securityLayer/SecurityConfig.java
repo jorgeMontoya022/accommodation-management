@@ -52,7 +52,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET,  "/api/v1/accommodation/*").permitAll()              // detalle por id
                         .requestMatchers(HttpMethod.GET,  "/api/v1/accommodation/city/**").permitAll()        // por ciudad
                         .requestMatchers(HttpMethod.GET,  "/api/v1/accommodation/*/main-image").permitAll()   // imagen principal
-
+                        .requestMatchers(HttpMethod.POST, "/api/v1/accommodation/*/images").permitAll()
                         // Comments (lectura pública)
                         .requestMatchers(HttpMethod.GET,  "/api/v1/accommodation/*/comments").permitAll()
                         .requestMatchers(HttpMethod.GET,  "/api/v1/accommodation/*/ratings/average").permitAll()

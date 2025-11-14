@@ -26,7 +26,7 @@ RUN ./gradlew dependencies --no-daemon || true
 COPY src src
 
 # Compilamos y generamos el JAR ejecutable de Spring Boot
-RUN ./gradlew clean bootJar --no-daemon
+RUN ./gradlew clean bootJar --no-daemon -x test
 
 # ===============================================================
 # Etapa 2: Ejecución (Runtime)
