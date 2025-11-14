@@ -14,7 +14,6 @@ public interface ImageAccommodationMapper {
      */
     @Named("imageAccommodationEntityToImageAccommodationDto")
     @Mapping(source = "accommodationEntity.id", target = "idAccommodation")
-    @Mapping(source = "principal", target = "isPrincipal")
     ImageAccommodationDto imageAccommodationEntityToImageAccommodationDto(ImageAccommodation imageAccommodation);
 
 
@@ -23,7 +22,6 @@ public interface ImageAccommodationMapper {
      * IGNORA la relación con el alojamiento porque se maneja por separado.
      */
     @Named("imageAccommodationDtoToImageAccommodationEntity")
-    @Mapping(source = "isPrincipal", target = "principal")
     @Mapping(target = "accommodationEntity", ignore = true)
     ImageAccommodation imageAccommodationDtoToImageAccommodationEntity(ImageAccommodationDto imageAccommodationDto);
 
@@ -44,7 +42,6 @@ public interface ImageAccommodationMapper {
      * @param imageAccommodationDto DTO con los datos a actualizar
      * @param imageAccommodation entidad existente que será actualizada
      */
-    @Mapping(source = "isPrincipal", target = "principal")  // ✅ AGREGADO
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "accommodationEntity", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
