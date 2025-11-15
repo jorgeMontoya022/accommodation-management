@@ -44,4 +44,13 @@ public interface BookingMapper {
 
     @IterableMapping(qualifiedByName = "bookingDtoToBookingEntity")
     List<BookingEntity> getBookingsEntity(List<RequestBookingDto> bookingDtoList);
+
+    @AfterMapping
+    default void fillGuestFields(BookingEntity entity, @MappingTarget ResponseBookingDto dto) {
+        if (entity.getGuestEntity() != null) {
+            dto.setGuestName(entity.getGuestEntity().getName());
+            dto.setGuestEmail(entity.getGuestEntity().getEmail());
+            dto.setGuestPhone(entity.getGuestEntity().getPhone());
+        }
+    }
 }
