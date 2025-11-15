@@ -43,6 +43,13 @@ public class GuestController {
                 .created(URI.create("/api/v1/guests/" + created.getId()))
                 .body(created);
     }
+    // SECURED — Obtener huésped por ID (uso anfitrión)
+    @Operation(summary = "Obtener huésped por ID", security = @SecurityRequirement(name = "bearerAuth"))
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseGuestDto> getGuestById(@PathVariable Long id) {
+        ResponseGuestDto dto = guestService.getGuestById(id);
+        return ResponseEntity.ok(dto);
+    }
 
     // PUBLIC — Verificación de email
     @Operation(summary = "Verificar disponibilidad de email")
