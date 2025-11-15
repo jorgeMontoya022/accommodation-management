@@ -4,7 +4,7 @@ import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.ChangeP
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.RequestGuestDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.ResponseGuestDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.UpdateGuestDto;
-import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service.impl.GuestServiceImpl; // ✅ usar la impl
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service.impl.GuestServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -43,6 +43,7 @@ public class GuestController {
                 .created(URI.create("/api/v1/guests/" + created.getId()))
                 .body(created);
     }
+
     // SECURED — Obtener huésped por ID (uso anfitrión)
     @Operation(summary = "Obtener huésped por ID", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/{id}")
@@ -89,7 +90,7 @@ public class GuestController {
         return ResponseEntity.ok().build();
     }
 
-    // SECURED — Cambiar contraseña
+    // SECURED — Cambiar contraseña (único método)
     @Operation(
             summary = "Cambiar mi contraseña",
             security = @SecurityRequirement(name = "bearerAuth"),
@@ -100,13 +101,13 @@ public class GuestController {
             }
     )
     @PutMapping("/me/password")
-    public ResponseEntity<Void> changeMyPassword(
+    public ResponseEntity<?> changeMyPassword(
             Authentication authentication,
             @Valid @RequestBody ChangePasswordDto request
     ) {
         Long guestId = extractUserIdFromAuthentication(authentication);
         guestService.changePassword(guestId, request);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(Map.of("mensaje", "Contraseña actualizada correctamente"));
     }
 
     // SECURED — Métricas
@@ -126,7 +127,7 @@ public class GuestController {
         return ResponseEntity.ok(Map.of("active", active));
     }
 
-    // Helper
+    // Helper para extraer el ID del JWT (subject)
     private Long extractUserIdFromAuthentication(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new RuntimeException("Usuario no autenticado");

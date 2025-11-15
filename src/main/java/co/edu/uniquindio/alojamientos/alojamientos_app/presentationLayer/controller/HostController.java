@@ -92,7 +92,7 @@ public class HostController {
         return ResponseEntity.ok().build();
     }
 
-    // SECURED — Contraseña
+    // SECURED — Contraseña (único método)
     @Operation(
             summary = "Cambiar mi contraseña",
             security = @SecurityRequirement(name = "bearerAuth"),
@@ -144,9 +144,6 @@ public class HostController {
     }
 
     // SECURED — Reservas de un alojamiento mío
-    /**
-     * Lista las reservas de un alojamiento del host autenticado.
-     */
     @Operation(summary = "Listar reservas de un alojamiento mío", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/me/accommodations/{accommodationId}/bookings")
     public ResponseEntity<List<ResponseBookingDto>> listBookingsOfMyAccommodation(
@@ -154,7 +151,7 @@ public class HostController {
             @PathVariable Long accommodationId
     ) {
         Long hostId = extractUserIdFromAuthentication(authentication);
-        // El service debe validar que accommodationId pertenece a hostId
+        // El service debería validar que ese accommodationId pertenece al hostId
         List<ResponseBookingDto> list = bookingService.getBookingsByAccommodation(accommodationId);
         return ResponseEntity.ok(list);
     }

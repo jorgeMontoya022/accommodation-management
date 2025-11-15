@@ -34,7 +34,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/v1/auth/**","/api/v1/auth/**",
                                 "/swagger-ui/**", "/v3/api-docs/**", "/api-docs/**",
-                                "/api/v1/register"
+                                "/api/v1/register", "/api/v1/password-reset/**"
                         ).permitAll()
 
                         // ---- Públicos por controlador ----
@@ -62,6 +62,7 @@ public class SecurityConfig {
 
                         // Todo lo demás requiere JWT
                         .anyRequest().authenticated()
+
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
