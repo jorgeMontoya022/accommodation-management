@@ -6,11 +6,13 @@ import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.Respons
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.UpdateHostDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.ResponseAccommodationDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.ResponseBookingDto;
-
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.HostMetricsDto;
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service.HostMetricsService;
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service.impl.HostServicesImpl;
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service.impl.AccommodationServicesImpl;
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service.impl.BookingServicesImpl;
 
+import co.edu.uniquindio.alojamientos.alojamientos_app.securityLayer.JWTUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -22,11 +24,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -45,6 +50,8 @@ public class HostController {
     private final HostServicesImpl hostService;
     private final AccommodationServicesImpl accommodationService;
     private final BookingServicesImpl bookingService;
+    private final HostMetricsService hostMetricsService;
+    private final JWTUtils jwtUtils;
 
     // PUBLIC — Registro
     @Operation(summary = "Registrar anfitrión")
@@ -156,6 +163,28 @@ public class HostController {
         return ResponseEntity.ok(list);
     }
 
+    @Operation(summary = "Métricas del host autenticado")
+    @GetMapping("/me/metrics")
+    public ResponseEntity<HostMetricsDto> getMyMetrics(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
+            @RequestParam(name = "from", required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam(name = "to", required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to
+    ) {
+        Long hostId = extractUserIdFromAuthorization(authorization);
+        HostMetricsDto dto = hostMetricsService.getMetricsForHost(hostId, from, to);
+        return ResponseEntity.ok(dto);
+    }
+
+    private Long extractUserIdFromAuthorization(String authorization) {
+        String token = (authorization != null && authorization.startsWith("Bearer "))
+                ? authorization.substring(7)
+                : authorization;
+        String subject = jwtUtils.parseJwt(token).getPayload().getSubject();
+        return Long.valueOf(subject);
+    }
+
     // Helper
     private Long extractUserIdFromAuthentication(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -168,3 +197,4 @@ public class HostController {
         throw new RuntimeException("No se pudo extraer el ID del usuario");
     }
 }
+

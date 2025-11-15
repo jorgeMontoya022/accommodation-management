@@ -48,6 +48,21 @@ public interface BookingRepository extends JpaRepository<BookingEntity, Long> {
 
     List<BookingEntity> findByGuestEntityIdOrderByDateCreationDesc(Long guestId);
 
-
     List<BookingEntity> findByAccommodationAssociatedIdOrderByDateCreationDesc(Long accommodationId);
+
+    @Query("""
+        SELECT b 
+        FROM BookingEntity b
+        WHERE b.accommodationAssociated.hostEntity.id = :hostId
+          AND b.statusReservation IN :statuses
+          AND b.dateCheckin <= :endDate
+          AND b.dateCheckout >= :startDate
+        """)
+    List<BookingEntity> findByHostAndDateRange(
+            @Param("hostId") Long hostId,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate,
+            @Param("statuses") List<StatusReservation> statuses
+    );
+
 }

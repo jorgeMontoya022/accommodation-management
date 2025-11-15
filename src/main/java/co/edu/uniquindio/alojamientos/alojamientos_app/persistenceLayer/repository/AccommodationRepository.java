@@ -68,9 +68,6 @@ public interface AccommodationRepository extends
             Pageable pageable
     );
 
-    /**
-     * Cuando necesites la galería sin N+1 (por ejemplo, para armar DTO con imagen principal).
-     */
     @EntityGraph(attributePaths = {"images"})
     @Query("SELECT a FROM AccommodationEntity a " +
             "LEFT JOIN FETCH a.images " +
@@ -79,5 +76,8 @@ public interface AccommodationRepository extends
     /** Listado general con imágenes (para la búsqueda paginada) */
     @EntityGraph(attributePaths = {"images"})
     Page<AccommodationEntity> findAllByDeletedFalse(Pageable pageable);
+
+    List<AccommodationEntity> findAllByHostEntity_IdAndDeletedFalse(Long hostId);
+
 
 }
