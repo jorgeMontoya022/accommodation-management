@@ -414,24 +414,40 @@ public class BookingServicesImpl implements BookingService {
     @Override
     @Transactional(readOnly = true)
     public boolean isAccommodationAvailable(Long accommodationId, LocalDate startDate, LocalDate endDate) {
+
+        // Estados que bloquean el calendario
+        List<StatusReservation> activeStatuses = List.of(
+                StatusReservation.PENDING,
+                StatusReservation.CONFIRMED,
+                StatusReservation.PAID
+        );
+
         List<BookingEntity> overlappingBookings = bookingDao.findOverlappingBookings(
                 accommodationId,
                 startDate.atStartOfDay(),
                 endDate.atTime(23, 59),
-                List.of(StatusReservation.PAID, StatusReservation.PENDING)
+                activeStatuses
         );
 
         return overlappingBookings.isEmpty();
     }
 
+
     @Override
     @Transactional(readOnly = true)
     public List<LocalDate> getUnavailableDates(Long accommodationId) {
+
+        List<StatusReservation> activeStatuses = List.of(
+                StatusReservation.PENDING,
+                StatusReservation.CONFIRMED,
+                StatusReservation.PAID
+        );
+
         List<BookingEntity> bookings = bookingDao.findOverlappingBookings(
                 accommodationId,
                 LocalDateTime.now().minusYears(1),
                 LocalDateTime.now().plusYears(1),
-                List.of(StatusReservation.PAID, StatusReservation.PENDING)
+                activeStatuses
         );
 
         List<LocalDate> unavailableDates = new ArrayList<>();
@@ -448,6 +464,7 @@ public class BookingServicesImpl implements BookingService {
 
         return unavailableDates;
     }
+
 
     @Override
     @Transactional(readOnly = true)
