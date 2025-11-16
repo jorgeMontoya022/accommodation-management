@@ -45,7 +45,7 @@ services:
       SMTP_HOST: smtp.gmail.com
       SMTP_PORT: "587"
       SMTP_USERNAME: "stayco928@gmail.com"
-      SMTP_PASSWORD: "hcnx wnzg hgdd ipww"
+      SMTP_PASSWORD: "hcnxwnzghgddipww"
       SMTP_TLS: "true"
 
       # Flags de la app
