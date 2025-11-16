@@ -1,5 +1,7 @@
 package co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service.impl;
 
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.externalServiceDto.SendEmailDto;
+import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service.EmailService;
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.dto.VerifyPasswordResetDto;
 import co.edu.uniquindio.alojamientos.alojamientos_app.businessLayer.service.PasswordResetService;
 import co.edu.uniquindio.alojamientos.alojamientos_app.persistenceLayer.entity.GuestEntity;
@@ -19,18 +21,17 @@ import org.springframework.web.server.ResponseStatusException;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 
-import java.security.SecureRandom;
-import java.time.LocalDateTime;
-
 @Service
 @Transactional
 @RequiredArgsConstructor
 @Slf4j
 public class PasswordResetServiceImpl implements PasswordResetService {
+
     private final GuestRepository guestRepository;
     private final HostRepository hostRepository;
     private final PasswordResetTokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     @Override
     public void requestReset(String email) {
@@ -44,7 +45,7 @@ public class PasswordResetServiceImpl implements PasswordResetService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No existe un usuario con ese email");
         }
 
-        // Invalidar tokens anteriores (opcional)
+        // Invalidar token anterior (si existe)
         tokenRepository.findByEmailAndUserType(email, userType)
                 .ifPresent(t -> {
                     t.setUsed(true);
@@ -57,11 +58,30 @@ public class PasswordResetServiceImpl implements PasswordResetService {
         token.setToken(code);
         token.setEmail(email);
         token.setUserType(userType);
-        // createdAt y expiresAt se setean en @PrePersist
+        // createdAt y expiresAt los setea @PrePersist
         tokenRepository.save(token);
 
-        // TODO: enviar email con el código 'code'
-        // Mientras tanto, en desarrollo, puedes devolver el code en la respuesta del controller si quieres probar rápido.
+        // ============================
+        // Enviar email con el código
+        // ============================
+        try {
+            SendEmailDto sendEmailDto = SendEmailDto.builder()
+                    .recipient(email)
+                    .subject("Código para restablecer tu contraseña")
+                    .body(buildPasswordResetBody(code))
+                    .build();
+
+            emailService.sendMail(sendEmailDto);
+            log.info("Correo de restablecimiento enviado a {}", email);
+
+        } catch (Exception e) {
+            log.error("Error enviando correo de restablecimiento a {}: {}", email, e.getMessage(), e);
+
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "No fue posible enviar el correo de restablecimiento, inténtalo más tarde"
+            );
+        }
     }
 
     @Override
@@ -97,7 +117,9 @@ public class PasswordResetServiceImpl implements PasswordResetService {
                 host.setPassword(encodedPassword);
                 hostRepository.save(host);
             }
-            default -> throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Tipo de usuario no soportado");
+            default -> throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Tipo de usuario no soportado");
         }
 
         token.setUsed(true);
@@ -109,5 +131,27 @@ public class PasswordResetServiceImpl implements PasswordResetService {
         SecureRandom random = new SecureRandom();
         int num = random.nextInt(900_000) + 100_000; // 100000 - 999999
         return String.valueOf(num);
+    }
+
+    // ================================
+    // Plantilla simple del correo
+    // ================================
+    /**
+     * Construye el cuerpo del correo con instrucciones para el usuario.
+     */
+    private String buildPasswordResetBody(String code) {
+        // Comentarios en español para dejar reglas claras
+        return """
+                Hola,
+
+                Has solicitado restablecer la contraseña de tu cuenta en Alojamientos.
+                Tu código de verificación es: %s
+
+                Este código es válido por 15 minutos.
+                Si tú no realizaste esta solicitud, puedes ignorar este mensaje.
+
+                Atentamente,
+                Equipo Alojamientos
+                """.formatted(code);
     }
 }

@@ -186,6 +186,25 @@ public class BookingServicesImpl implements BookingService {
             log.error("Error al enviar email al anfitrión", e);
         }
     }
+    /**
+     * Construye el correo de confirmación de reserva para el huésped
+     * con todos los detalles importantes.
+     */
+    private String buildGuestConfirmedBookingEmail(BookingEntity booking) {
+        return "¡Hola " + booking.getGuestEntity().getName() + "!\n\n" +
+                "¡Tu reserva ha sido CONFIRMADA por el anfitrión!\n\n" +
+                "Detalles de tu reserva:\n" +
+                "- Alojamiento: " + booking.getAccommodationAssociated().getQualification() + "\n" +
+                "- Check-in: " + booking.getDateCheckin() + "\n" +
+                "- Check-out: " + booking.getDateCheckout() + "\n" +
+                "- Personas: " + booking.getQuantityPeople() + "\n" +
+                "- Total: $" + String.format("%.2f", booking.getTotalValue()) + "\n" +
+                "- Estado actual: " + booking.getStatusReservation() + "\n\n" +
+                "Te esperamos. Recuerda revisar las normas del alojamiento antes de tu llegada.\n\n" +
+                "Saludos,\n" +
+                "El equipo de Alojamientos Úniquindío";
+    }
+
 
     private String buildGuestBookingEmail(BookingEntity booking) {
         return "¡Hola " + booking.getGuestEntity().getName() + "!\n\n" +
@@ -316,19 +335,19 @@ public class BookingServicesImpl implements BookingService {
 
         log.info("Reserva confirmada. ID: {} - Nuevo estado: PAID", bookingId);
 
-        // Email de confirmación
+        // Email de confirmación con detalles al huésped
         try {
             SendEmailDto email = SendEmailDto.builder()
                     .recipient(booking.getGuestEntity().getEmail())
                     .subject("¡Tu reserva ha sido confirmada!")
-                    .body("¡Felicidades! Tu reserva en " +
-                            booking.getAccommodationAssociated().getQualification() +
-                            " ha sido confirmada.")
+                    .body(buildGuestConfirmedBookingEmail(booking))
                     .build();
             emailService.sendMail(email);
+            log.info("Email de confirmación enviado al huésped: {}", booking.getGuestEntity().getEmail());
         } catch (Exception e) {
-            log.error("Error al enviar email", e);
+            log.error("Error al enviar email de confirmación al huésped", e);
         }
+
 
         return bookingMapper.bookingEntityToBookingDto(updated);
     }
@@ -400,13 +419,25 @@ public class BookingServicesImpl implements BookingService {
             SendEmailDto email = SendEmailDto.builder()
                     .recipient(booking.getAccommodationAssociated().getHostEntity().getEmail())
                     .subject("Una reserva ha sido cancelada")
-                    .body("El huésped ha cancelado su reserva.\n\nRazón: " +
-                            cancelBookingRequestDto.getReasonCancellation())
+                    .body("Hola " + booking.getAccommodationAssociated().getHostEntity().getName() + ",\n\n" +
+                            "El huésped " + booking.getGuestEntity().getName() + " ha cancelado su reserva en tu alojamiento.\n\n" +
+                            "Detalles de la reserva cancelada:\n" +
+                            "- Alojamiento: " + booking.getAccommodationAssociated().getQualification() + "\n" +
+                            "- Check-in: " + booking.getDateCheckin() + "\n" +
+                            "- Check-out: " + booking.getDateCheckout() + "\n" +
+                            "- Personas: " + booking.getQuantityPeople() + "\n" +
+                            "- Total: $" + String.format("%.2f", booking.getTotalValue()) + "\n\n" +
+                            "Razón indicada por el huésped:\n" +
+                            cancelBookingRequestDto.getReasonCancellation() + "\n\n" +
+                            "Te recomendamos revisar tu calendario y la disponibilidad del alojamiento.\n\n" +
+                            "Saludos,\n" +
+                            "El equipo de Alojamientos Úniquindío")
                     .build();
             emailService.sendMail(email);
         } catch (Exception e) {
             log.error("Error al enviar email", e);
         }
+
 
         return bookingMapper.bookingEntityToBookingDto(updated);
     }
