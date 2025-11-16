@@ -18,10 +18,20 @@ public class MailerConfig {
 
     @Bean
     public Mailer mailer() {
+        System.out.println("======== MAIL CONFIG ========");
+        System.out.println("MAIL HOST = " + host);
+        System.out.println("MAIL PORT = " + port);
+        System.out.println("MAIL USERNAME = '" + username + "'");
+        System.out.println("MAIL PASSWORD IS NULL? " + (password == null));
+        System.out.println("MAIL PASSWORD LENGTH = " + (password != null ? password.length() : 0));
+        System.out.println("MAIL TLS = " + tlsEnabled);
+        System.out.println("=============================");
+
         return MailerBuilder
                 .withSMTPServer(host, port, username, password)
                 .withTransportStrategy(tlsEnabled ? TransportStrategy.SMTP_TLS : TransportStrategy.SMTP)
                 .withSessionTimeout(10000)
                 .buildMailer();
     }
+
 }
